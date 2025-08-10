@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.2.0
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.1.2...v0.2.0)
+
+### 🚀 Enhancements
+
+- ⚠️ Models page details add, model page details add, refactored landing page ([4774a79](https://github.com/Algostract/gold-fish-bowl/commit/4774a79))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Models page details add, model page details add, refactored landing page ([4774a79](https://github.com/Algostract/gold-fish-bowl/commit/4774a79))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.1.2
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.1.1...v0.1.2)
