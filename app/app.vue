@@ -80,7 +80,7 @@ watch(permissionGranted, async (value) => {
   <NuxtRouteAnnouncer />
   <NuxtPwaManifest />
   <NuxtPwaAssets />
-  <NuxtLoadingIndicator color="#0593FA" />
+  <NuxtLoadingIndicator color="#FFD400" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
@@ -124,6 +124,34 @@ svg.iconify--local {
 }
 
 .glass-effect {
-  @apply border border-black/10 bg-black/10 backdrop-blur-[24px] before:pointer-events-none before:absolute before:inset-0 before:border before:border-black/20 before:content-[''];
+  @apply border border-black/10 bg-black/10 backdrop-blur-[24px] before:pointer-events-none before:absolute before:inset-0 before:content-[''];
+}
+
+.autoscroll-x {
+  animation: scroll-x linear infinite;
+}
+
+.autoscroll-y {
+  animation: scroll-y linear infinite;
+}
+
+@keyframes scroll-x {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-y {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
 }
 </style>

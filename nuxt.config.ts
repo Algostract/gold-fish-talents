@@ -42,6 +42,7 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [
+    // '@hannoeru/nuxt-otel',
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/icon',
@@ -138,8 +139,8 @@ export default defineNuxtConfig({
     },
   },
   colorMode: {
-    preference: 'system',
-    fallback: 'light',
+    preference: 'dark',
+    fallback: 'dark',
     classSuffix: '',
   },
   site: {

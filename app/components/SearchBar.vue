@@ -13,7 +13,6 @@ const onSearch = useDebounceFn(() => {
     queryBy: 'name',
     filterBy: '', // e.g. "isFeatured:=true"
     sortBy: 'rating:desc',
-    perPage: 10,
   }
 }, 300)
 </script>

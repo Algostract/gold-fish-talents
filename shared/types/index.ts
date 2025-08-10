@@ -3,7 +3,7 @@ export interface Photo {
   title: string
   image?: string
   description: string
-  featured: null | number
+  featured: boolean
   aspectRatio: number
   url: string
 }
@@ -73,6 +73,9 @@ export interface SearchParams {
   queryBy: string
   filterBy: string
   sortBy: string
+}
+
+export interface PaginatedSearchParams extends SearchParams {
   perPage: number
   page: number
 }
@@ -250,8 +253,8 @@ export interface NotionAsset {
       has_more: false
     }
     Featured: {
-      type: 'number'
-      number: number
+      type: 'checkbox'
+      checkbox: boolean
     }
     Resolution: {
       select: {

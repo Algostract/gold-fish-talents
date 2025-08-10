@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     const file = formData.get('file') as File
     const title = formData.get('title') as string
     const description = (formData.get('description') ?? '') as string
-    const featured = parseInt(formData.get('featured') as string)
+    const featured = Boolean(formData.get('featured') as string)
     const projectSlug = formData.get('projectSlug') as string
 
     const fileName = `${randomUUID()}.${file.name.split('.').at(-1)?.toLowerCase()}`
@@ -46,35 +46,37 @@ export default defineEventHandler(async (event) => {
     // Upload to uploadcare cdn
     const { file: id } = await uploadcareUploadImage(imageFile)
 
-    console.log({ projectSlug, modelSlug, assetDb: notionDbId.asset })
+    // modelSlug (manjira-mitra-13) -> modelNotionId ()
+    // projectSlug () -> projectNotionId ()
+    // console.log({ projectSlug, modelSlug })
 
-    /*     const response = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
-          filter: {
-            and: [
-              {
-                property: 'Project',
-                relation: projectSlug
-                  ? {
-                    contains: projectSlug,
-                  }
-                  : {
-                    is_empty: true,
-                  },
-              },
-              {
-                property: 'Model',
-                relation: {
-                  contains: modelSlug,
+    const response = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
+      filter: {
+        and: [
+          {
+            property: 'Project',
+            relation: projectSlug
+              ? {
+                  contains: projectSlug,
+                }
+              : {
+                  is_empty: true,
                 },
-              },
-            ],
-          }
-        }) */
-    const lastIndex = 0 /* response.reduce((max, page) => {
+          },
+          {
+            property: 'Model',
+            relation: {
+              contains: modelSlug,
+            },
+          },
+        ],
+      },
+    })
+    const lastIndex = response.reduce((max, page) => {
       const indexValue = page.properties?.Index?.number ?? 0
 
       return indexValue > max ? indexValue : max
-    }, 0) */
+    }, 0)
 
     await notion.pages.create({
       parent: {
@@ -155,8 +157,8 @@ export default defineEventHandler(async (event) => {
           },
         },
         Featured: {
-          type: 'number',
-          number: featured,
+          type: 'checkbox',
+          checkbox: featured,
         },
       },
     })

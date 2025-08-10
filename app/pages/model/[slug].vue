@@ -1,11 +1,44 @@
 <script setup lang="ts">
+import type { ShareDetails } from '~/components/Float/ActionBar.vue'
+
+const {
+  public: { siteUrl },
+} = useRuntimeConfig()
+
 const route = useRoute()
 const slug = route.params.slug!.toString()
 const { data: model, status } = useFetch(`/api/model/${slug}`)
+const { data: photos } = useFetch(`/api/model/${slug}/photo`)
 
 if (!model.value && status.value === 'success') {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
+
+const title = `${model.value?.name}`
+const description = `${model.value?.name}`
+const imageUrl = `https://ucarecdn.com/${model.value?.photo.image}/-/format/auto/-/crop/1440x720/50p,25p/-/scale_crop/${Math.round(720 * (2 / 1))}x720/center/`
+
+useSeoMeta({
+  title: title,
+  ogTitle: title,
+  twitterTitle: title,
+  description: description,
+  ogDescription: description,
+  twitterDescription: description,
+  ogImage: imageUrl,
+  twitterImage: imageUrl,
+  ogUrl: `${siteUrl}/model/${slug}`,
+})
+
+useSchemaOrg([
+  defineImage({
+    url: `${siteUrl}/photo/${slug}`,
+    contentUrl: imageUrl,
+    caption: description,
+    width: 720,
+    height: Math.round(720 * (9 / 16)),
+  }),
+])
 
 // grab live viewport dimensions
 // const { width, height } = useWindowSize()
@@ -17,55 +50,7 @@ const imageModifiers = computed(() => {
     : { fit: 'cover' } // for small screens
 })
 
-function humanizeKey(key: string) {
-  return key
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, (m) => m.toUpperCase())
-    .trim()
-}
-
-const sections = computed(() => {
-  if (!model.value?.details) return []
-
-  const keys = Object.keys(model.value.details).filter((k) => k !== 'fee' && k !== 'name')
-
-  return keys.map((key) => {
-    const rawSection = model.value!.details[key as keyof typeof model.value.details]
-    if (typeof rawSection !== 'object' || !rawSection) return { key, title: humanizeKey(key), items: [] }
-    const items = Object.entries(rawSection as object).map(([k, v]) => {
-      let display: string | number = v
-
-      if (Array.isArray(v)) {
-        display = v.join(', ')
-      } else if (typeof v === 'boolean') {
-        display = v ? 'Yes' : 'No'
-      } else if (k.toLowerCase() === 'age' && typeof v === 'number') {
-        display = `${v} Years`
-      }
-
-      const color = typeof v === 'string' && /^#([0-9A-F]{3,6})$/i.test(v) ? v : undefined
-
-      return {
-        label: humanizeKey(k),
-        value: display,
-        color,
-      }
-    })
-
-    return {
-      key,
-      title: humanizeKey(key),
-      items,
-    }
-  })
-})
-
-watch(status, (value) => {
-  if (value === 'success') start()
-})
-
 const isOpen = ref(false)
-
 const { start } = useTimeoutFn(
   () => {
     isOpen.value = true
@@ -74,52 +59,31 @@ const { start } = useTimeoutFn(
   { immediate: false }
 )
 
+watch(status, (value) => {
+  if (value === 'success') start()
+})
+
 onMounted(() => {
   if (status.value === 'success') isOpen.value = true
+})
+
+const shareDetails = ref<ShareDetails>({
+  title: title,
+  image: `https://ucarecdn.com/${model.value?.photo.image}/-/format/auto/-/scale_crop/${Math.round(720 * (9 / 16))}x720/center/`,
+  text: description,
+  url: `${siteUrl}/model/${slug}`,
 })
 </script>
 
 <template>
-  <main v-if="model && status == 'success'" class="relative h-dvh w-dvw">
-    <NuxtLink to="/model" class="absolute left-4 top-4 flex size-6 rotate-180 items-center justify-center rounded-full bg-white p-6 pb-[22px] pt-[26px] text-xl text-black"> ❯ </NuxtLink>
-    <!-- :modifiers="{
-        setfill: '000000',
-        crop: 'face/300px300p/-/crop/1:1/50p,25p',
-        // zoom: '0.8',
-      }" -->
-
-    <NuxtImg :src="model.photo.image" height="100dvh" :modifiers="imageModifiers" class="absolute inset-0 -z-10 h-full w-full object-cover md:object-contain" alt="Model hero shot" />
-    <!-- <CompositionOverlay /> -->
-    <!-- Collapsable Details Overlay -->
-    <div
-      class="glass-effect absolute bottom-16 left-0 flex aspect-square min-h-0 w-full max-w-[94vw] flex-col rounded-r-xl text-white transition-transform duration-500 md:max-w-md"
-      :class="{ '-translate-x-[95%]': !isOpen }">
-      <div class="relative flex size-full flex-col justify-between gap-6 p-6">
-        <h1 class="text-2xl">{{ model.name }}</h1>
-        <!-- Auto-discovered Sections -->
-        <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-          <div v-for="section in sections" :key="section.key">
-            <h2 class="mb-2 text-lg">{{ section.title }}</h2>
-            <div class="text-md grid grid-cols-2 gap-y-5">
-              <div v-for="item in section.items" :key="item.label" class="flex flex-col gap-0.5 capitalize">
-                <span>{{ item.label }}</span>
-                <span :class="item.color ? `text-[${item.color}]` : ''">
-                  {{ item.value }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button class="absolute right-0 top-1/2 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-white bg-opacity-20" @click="isOpen = !isOpen">
-          <span class="transform" :class="{ 'rotate-180': isOpen }">❯</span>
-        </button>
-        <div class="flex flex-col gap-1">
-          <h2 class="text-xl">Fee</h2>
-          <p class="text-lg">₹ {{ model.fee }} / day</p>
-        </div>
-      </div>
-    </div>
-    <!-- collapse handle -->
+  <main v-if="model && status == 'success'" class="relative flex flex-col gap-8 p-2">
+    <section id="hero" class="relative -left-2 -top-2 isolate h-dvh w-dvw">
+      <NuxtImg :src="model.photo.image" height="100dvh" :modifiers="imageModifiers" class="absolute inset-0 -z-10 h-full w-full object-cover md:object-contain" alt="Model hero shot" />
+      <!-- <CompositionOverlay /> -->
+      <CardModelDetail class="absolute bottom-24 left-0" :model="model" :is-open="isOpen" @is-open="(value) => (isOpen = value)" />
+    </section>
+    <PhotoGallery v-if="photos" :photos="photos" />
+    <FloatActionBar :share-details="shareDetails" />
   </main>
 </template>
 
