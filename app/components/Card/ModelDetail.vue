@@ -76,7 +76,7 @@ function toggleOpen() {
         </div>
       </div>
       <button class="absolute right-0 top-3/4 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-white bg-opacity-20" @click="toggleOpen">
-        <NuxtIcon name="local:chevron" class="fill-black duration-300" :class="{ 'rotate-180': isOpen }" />
+        <NuxtIcon name="local:chevron" class="fill-black duration-300" :class="{ 'rotate-180': !isOpen }" />
       </button>
       <div class="flex flex-col gap-1">
         <h2 class="text-xl">Fee</h2>

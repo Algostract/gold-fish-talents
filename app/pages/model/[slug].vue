@@ -7,10 +7,10 @@ const {
 
 const route = useRoute()
 const slug = route.params.slug!.toString()
-const { data: model, status } = useFetch(`/api/model/${slug}`)
-const { data: photos } = useFetch(`/api/model/${slug}/photo`)
+const { data: model, status } = await useFetch(`/api/model/${slug}`)
+const { data: photos } = await useFetch(`/api/model/${slug}/photo`)
 
-if (!model.value && status.value === 'success') {
+if (status.value === 'success' && !model.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 

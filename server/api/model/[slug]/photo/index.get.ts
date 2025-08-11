@@ -29,7 +29,6 @@ export default defineCachedEventHandler<Promise<Photo[]>>(
       })
 
       const modelId = notionNormalizeId(models[0].id)
-      console.log({ modelId })
       const assets = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
         filter: {
           and: [
