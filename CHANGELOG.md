@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.1
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.0...v0.2.1)
+
+### 🩹 Fixes
+
+- OgImage and ogTitle rendered properly ([d205937](https://github.com/Algostract/gold-fish-bowl/commit/d205937))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.0
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.1.2...v0.2.0)
