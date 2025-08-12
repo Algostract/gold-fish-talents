@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.4
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.3...v0.2.4)
+
+### 🩹 Fixes
+
+- Undefined activeModel error handled ([9bf0de9](https://github.com/Algostract/gold-fish-bowl/commit/9bf0de9))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.3
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.2...v0.2.3)
