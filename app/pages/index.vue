@@ -25,15 +25,19 @@ useSchemaOrg([
   }),
 ])
 
-const { data: featuredModels } = await useFetch('/api/model', {
-  query: {
-    query: '',
-    queryBy: 'name',
-    filterBy: '',
-    sortBy: 'name:asc',
-    perPage: 10,
+const { data: featuredModels } = await useFetch(
+  '/api/model',
+  {
+    query: {
+      query: '',
+      queryBy: 'name',
+      filterBy: '',
+      sortBy: 'name:asc',
+      perPage: 10,
+    },
   },
-})
+  { default: () => [] }
+)
 
 const currentIndex = ref(0)
 const activeModel = computed(() => featuredModels.value![currentIndex.value]!)
@@ -41,7 +45,7 @@ const activeModel = computed(() => featuredModels.value![currentIndex.value]!)
 watchEffect((onCleanup) => {
   const interval = setInterval(() => {
     currentIndex.value = (currentIndex.value + 1) % (featuredModels.value?.length || 1)
-  }, 4000) // 4s per image
+  }, 4000)
   onCleanup(() => clearInterval(interval))
 })
 
@@ -87,8 +91,6 @@ const imageModifiers = computed(() => {
         </div>
         <NuxtLink to="/model" class="w-full rounded-full bg-light-500 px-5 py-4 text-center text-lg text-primary-500 dark:bg-dark-500"> Get started </NuxtLink>
       </div>
-      <!-- <NuxtImg provider="ipx" src="/images/model-1.png" alt="Model" :width="720" :height="Math.round(720 / (9 / 16))"
-        fit="cover" class="size-full bg-[#D4E0EA] object-contain object-bottom" /> -->
       <Transition
         enter-active-class="transition-transform duration-500 ease-out "
         enter-from-class="translate-x-full"
@@ -99,9 +101,9 @@ const imageModifiers = computed(() => {
         mode="default">
         <NuxtImg
           :key="activeModel.id"
-          :src="`${activeModel.photo.image}/-/scale_crop/720x1440/50p,0p/`"
+          :src="`${activeModel.photo.image}/-/scale_crop/360x720/50p,0p/`"
           :alt="`${activeModel.name} hero image`"
-          :height="Math.round(1440 / (1 / 2))"
+          :height="Math.round(720 / (1 / 2))"
           :modifiers="imageModifiers"
           :placeholder="[360, Math.round(360 / (1 / 2)), 'lightest', 25]"
           class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />

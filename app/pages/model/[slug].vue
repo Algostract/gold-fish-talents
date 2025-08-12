@@ -71,9 +71,9 @@ const shareAsset = ref<ShareAsset>({
   <main v-if="model" class="relative flex flex-col gap-8 p-2">
     <section id="hero" class="relative -left-2 -top-2 isolate h-dvh w-dvw">
       <NuxtImg
-        :src="`${model.photo.image}/-/scale_crop/720x1440/50p,0p/`"
+        :src="`${model.photo.image}/-/scale_crop/360x720/50p,0p/`"
         :alt="`${model.name} hero image`"
-        :height="Math.round(1440 / (1 / 2))"
+        :height="Math.round(720 / (1 / 2))"
         :modifiers="imageModifiers"
         :placeholder="[360, Math.round(360 / (1 / 2)), 'lightest', 25]"
         class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />
