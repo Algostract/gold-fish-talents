@@ -36,6 +36,7 @@ const { data: featuredModels } = await useFetch('/api/model', {
 })
 
 const currentIndex = ref(0)
+const activeModel = computed(() => featuredModels.value![currentIndex.value]!)
 
 watchEffect((onCleanup) => {
   const interval = setInterval(() => {
@@ -43,10 +44,18 @@ watchEffect((onCleanup) => {
   }, 4000) // 4s per image
   onCleanup(() => clearInterval(interval))
 })
+
+const { width } = useWindowSize()
+
+const imageModifiers = computed(() => {
+  return width.value >= 768
+    ? { fit: 'contain' } // for md and up
+    : { fit: 'cover' } // for small screens
+})
 </script>
 
 <template>
-  <main class="relative isolate mx-auto flex min-h-dvh max-w-[90rem] flex-col items-center justify-center gap-4 overflow-hidden px-2 md:px-4">
+  <main class="relative isolate mx-auto flex h-dvh w-dvw max-w-[90rem] flex-col items-center justify-center gap-4 overflow-hidden px-2 md:px-4">
     <header class="absolute left-0 right-0 top-4 mx-auto max-w-[90rem] fill-black px-4 text-black md:px-16">
       <nav class="relative z-20 grid grid-cols-3 items-center">
         <NuxtLink to="/" class="flex w-max items-center justify-center gap-2" aria-label="home">
@@ -61,7 +70,7 @@ watchEffect((onCleanup) => {
       </nav>
     </header>
     <!-- Hero section -->
-    <section class="overlay relative isolate h-dvh w-dvw">
+    <section class="overlay relative isolate h-dvh w-dvw max-w-[90rem]">
       <div class="absolute bottom-0 left-0 z-10 flex w-full flex-col gap-5 px-4 py-8 text-white">
         <div>
           <p class="font-sub text-xl font-semi-bold uppercase [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">
@@ -86,17 +95,16 @@ watchEffect((onCleanup) => {
         enter-to-class="translate-x-0"
         leave-from-class="translate-x-0"
         leave-to-class="-translate-x-[10%] opacity-80"
-        leave-active-class="absolute duration-700 -z-10"
+        leave-active-class="absolute duration-1000 -z-10"
         mode="default">
         <NuxtImg
-          v-if="featuredModels && featuredModels?.length"
-          :key="featuredModels[currentIndex]?.photo.image"
-          :src="featuredModels[currentIndex]?.photo.image"
-          :alt="featuredModels[currentIndex]?.photo.title"
-          :width="720"
-          :height="Math.round(720 / (9 / 16))"
-          fit="cover"
-          class="size-full object-cover object-bottom" />
+          :key="activeModel.id"
+          :src="`${activeModel.photo.image}/-/scale_crop/720x1440/50p,0p/`"
+          :alt="`${activeModel.name} hero image`"
+          :height="Math.round(1440 / (1 / 2))"
+          :modifiers="imageModifiers"
+          :placeholder="[360, Math.round(360 / (1 / 2)), 'lightest', 25]"
+          class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />
       </Transition>
     </section>
   </main>

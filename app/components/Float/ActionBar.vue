@@ -1,62 +1,38 @@
 <script setup lang="ts">
-export interface ShareDetails {
-  title: string
-  image: string
-  text: string
-  url: string
-}
-
-const props = defineProps<{ shareDetails: ShareDetails }>()
-
 type Action = 'back' | 'share' | 'highlight'
+
+const props = defineProps<{ shareAsset: ShareAsset; assetType: 'model' }>()
+
+const { proxy: gaProxy } = useScriptGoogleAnalytics()
+
 const urls: {
   action: Action
   id: string
   label: string
   icon: string
 }[] = [
-  { action: 'back', id: 'back', label: 'Back', icon: 'local:chevron' },
+  { action: 'back', id: 'back', label: 'Back', icon: 'local:chevron-bold' },
   { action: 'share', id: 'share', label: 'Share', icon: 'local:share' },
   { action: 'highlight', id: 'high', label: 'highlighted', icon: 'local:love' },
 ]
-
-/**
- * Fetch an image URL and convert it to a File suitable for Web Share level 2.
- * Returns `undefined` if fetch fails.
- */
-/* async function fetchImageAsFile(url?: string, filename = 'share-image') {
-  if (!url) return undefined
-  try {
-    const res = await fetch(url, { mode: 'cors' })
-    if (!res.ok) return undefined
-    const blob = await res.blob()
-    const ext = blob.type.split('/')[1] ?? 'jpg'
-    return new File([blob], `${filename}.${ext}`, { type: blob.type })
-  } catch {
-    return undefined
-  }
-} */
-
-const { share, isSupported } = useShare({ title: `${props.shareDetails.title}\n\n`, text: `${props.shareDetails.text}\n\n`, url: props.shareDetails.url })
-const { copy } = useClipboard()
+// const { share, isSupported } = useShare({ title: `${props.shareAsset.title}\n\n`, text: `${props.shareAsset.text}\n\n`, url: props.shareAsset.url })
 
 async function handleAction(action: Action) {
   switch (action) {
     case 'back':
-      navigateTo('/model')
+      navigateTo(`/${props.assetType}`)
       break
     case 'share': {
-      // const file = await fetchImageAsFile(props.shareDetails.image, `${props.shareDetails.title} Profile Photo`)
-
-      if (isSupported?.value) {
-        // await share({ files: [file] as File[] })
-        await share()
-      } else {
-        await copy(`${props.shareDetails.title}\n\n${props.shareDetails.text}\n\n${props.shareDetails.url}`)
-      }
-
+      await share(props.shareAsset)
+      gaProxy.gtag('event', 'share', { talent: props.shareAsset.name, type: props.assetType })
       break
     }
+    case 'highlight':
+      break
+    /*     case 'contact'{
+          gaProxy.gtag('event', 'contact', { talent: props.shareAsset.title, type: props.assetType })
+          break
+        } */
     default:
       break
   }

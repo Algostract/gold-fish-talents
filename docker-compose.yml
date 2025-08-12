@@ -4,6 +4,7 @@ services:
     build: .
     restart: on-failure:3
     volumes:
+      - static:/app/static
       - data:/app/.data
     env_file:
       - .env.prod
@@ -22,6 +23,13 @@ services:
       - 8108:8108
 
 volumes:
+  static:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./static
+
   data:
     driver: local
     driver_opts:

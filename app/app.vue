@@ -27,7 +27,14 @@ useSeoMeta({
   ogImageHeight: 640,
   fbAppId: 966242223397117,
   twitterCard: 'summary_large_image',
-  colorScheme: 'light dark',
+  colorScheme: 'dark',
+  viewport: {
+    initialScale: 1.0,
+    maximumScale: 1.0,
+    minimumScale: 1.0,
+    userScalable: 'no',
+    viewportFit: 'cover',
+  },
   ogImage: imageUrl,
   twitterImage: imageUrl,
 })

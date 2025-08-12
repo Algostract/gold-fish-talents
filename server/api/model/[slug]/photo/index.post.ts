@@ -69,6 +69,12 @@ export default defineEventHandler(async (event) => {
               contains: modelSlug,
             },
           },
+          {
+            property: 'Type',
+            select: {
+              equals: 'Photo',
+            },
+          },
         ],
       },
     })

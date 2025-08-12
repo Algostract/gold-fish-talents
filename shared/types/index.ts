@@ -21,6 +21,7 @@ export interface Model {
 }
 
 export interface DetailedModel extends Model {
+  description: string
   details: {
     personalInfo: {
       gender: 'male' | 'female'
@@ -78,6 +79,35 @@ export interface SearchParams {
 export interface PaginatedSearchParams extends SearchParams {
   perPage: number
   page: number
+}
+
+type Orientation = 'portrait' | 'landscape'
+
+export type FileSources = {
+  [codec in Codec]?: { type: string } & {
+    [resolution in Resolution]?: Orientation[]
+  }
+}
+
+export interface Source {
+  src: string
+  type: string
+  media: string
+  codec: Codec
+  resolution: Resolution
+  orientation: Orientation
+}
+
+export interface Video {
+  id: string
+  title: string
+  description: string
+  type: 'hero' | 'feature'
+  poster?: string
+  // category: Category
+  featured: boolean
+  sources: Source[]
+  url: string
 }
 
 /* Server Only */

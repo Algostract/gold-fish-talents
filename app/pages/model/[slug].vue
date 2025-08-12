@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import type { ShareDetails } from '~/components/Float/ActionBar.vue'
-
 const {
   public: { siteUrl },
 } = useRuntimeConfig()
 
 const route = useRoute()
 const slug = route.params.slug!.toString()
-const { data: model, status } = await useFetch(`/api/model/${slug}`)
-const { data: photos } = await useFetch(`/api/model/${slug}/photo`)
+const { data: model } = await useFetch(`/api/model/${slug}`)
+const { data: photos } = useFetch(`/api/model/${slug}/photo`, { default: () => [] })
+const { data: videos } = useFetch(`/api/model/${slug}/video`, { default: () => [] })
 
-if (status.value === 'success' && !model.value) {
+if (!model.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
 const title = `${model.value?.name}`
-const description = `${model.value?.name}`
-const imageUrl = `https://ucarecdn.com/${model.value?.photo.image}/-/format/auto/-/crop/1440x720/50p,25p/-/scale_crop/${Math.round(720 * (2 / 1))}x720/center/`
+const description = `${model.value?.description}`
+const imageUrl = `https://ucarecdn.com/${model.value?.photo.image}/-/setfill/9d9d9d/-/crop/face/300px300p/50p,50p/-/resize/x1024/`
 
 useSeoMeta({
   title: title,
@@ -40,8 +39,6 @@ useSchemaOrg([
   }),
 ])
 
-// grab live viewport dimensions
-// const { width, height } = useWindowSize()
 const { width } = useWindowSize()
 
 const imageModifiers = computed(() => {
@@ -50,40 +47,42 @@ const imageModifiers = computed(() => {
     : { fit: 'cover' } // for small screens
 })
 
-const isOpen = ref(false)
-const { start } = useTimeoutFn(
+const isModelDetailOpen = ref(false)
+const { start: startModelDetailTimer } = useTimeoutFn(
   () => {
-    isOpen.value = true
+    isModelDetailOpen.value = true
   },
   3000,
   { immediate: false }
 )
 
-watch(status, (value) => {
-  if (value === 'success') start()
-})
-
 onMounted(() => {
-  if (status.value === 'success') isOpen.value = true
+  startModelDetailTimer()
 })
 
-const shareDetails = ref<ShareDetails>({
-  title: title,
-  image: `https://ucarecdn.com/${model.value?.photo.image}/-/format/auto/-/scale_crop/${Math.round(720 * (9 / 16))}x720/center/`,
-  text: description,
+const shareAsset = ref<ShareAsset>({
+  name: title,
+  imageUrl: `https://ucarecdn.com/${model.value?.photo.image}/-/format/jpeg/-/scale_crop/720x960/50p,0p/`,
   url: `${siteUrl}/model/${slug}`,
 })
 </script>
 
 <template>
-  <main v-if="model && status == 'success'" class="relative flex flex-col gap-8 p-2">
+  <main v-if="model" class="relative flex flex-col gap-8 p-2">
     <section id="hero" class="relative -left-2 -top-2 isolate h-dvh w-dvw">
-      <NuxtImg :src="model.photo.image" height="100dvh" :modifiers="imageModifiers" class="absolute inset-0 -z-10 h-full w-full object-cover md:object-contain" alt="Model hero shot" />
+      <NuxtImg
+        :src="`${model.photo.image}/-/scale_crop/720x1440/50p,0p/`"
+        :alt="`${model.name} hero image`"
+        :height="Math.round(1440 / (1 / 2))"
+        :modifiers="imageModifiers"
+        :placeholder="[360, Math.round(360 / (1 / 2)), 'lightest', 25]"
+        class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />
       <!-- <CompositionOverlay /> -->
-      <CardModelDetail class="absolute bottom-24 left-0" :model="model" :is-open="isOpen" @is-open="(value) => (isOpen = value)" />
+      <CardModelDetail class="absolute bottom-24 left-0" :model="model" :is-open="isModelDetailOpen" @is-open="(value) => (isModelDetailOpen = value)" />
     </section>
-    <PhotoGallery v-if="photos" :photos="photos" />
-    <FloatActionBar :share-details="shareDetails" />
+    <PhotoGallery :photos="photos" />
+    <VideoGallery :videos="videos" />
+    <FloatActionBar :share-asset="shareAsset" :asset-type="'model'" />
   </main>
 </template>
 

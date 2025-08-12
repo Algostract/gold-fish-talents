@@ -59,8 +59,8 @@ function toggleOpen() {
   <div
     class="glass-effect flex aspect-[10/9] w-full max-w-[90vw] flex-col rounded-r-xl text-white transition-transform duration-500 before:rounded-r-xl before:bg-black/20 before:content-[''] md:max-w-md"
     :class="{ '-translate-x-[92%]': !isOpen }">
-    <div class="relative flex size-full flex-col justify-between gap-6 p-6">
-      <h1 class="text-2xl">{{ model.name }}</h1>
+    <div class="relative flex size-full flex-col justify-between gap-5 p-6">
+      <h1 class="whitespace-nowrap text-xl">{{ model.name }}</h1>
       <!-- Auto-discovered Sections -->
       <div class="flex flex-1 flex-col gap-6 overflow-y-auto">
         <div v-for="section in sections" :key="section.key">
@@ -75,8 +75,8 @@ function toggleOpen() {
           </div>
         </div>
       </div>
-      <button class="absolute right-0 top-3/4 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-white bg-opacity-20" @click="toggleOpen">
-        <NuxtIcon name="local:chevron" class="fill-black duration-300" :class="{ 'rotate-180': !isOpen }" />
+      <button class="absolute right-0 top-3/4 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-primary-500" @click="toggleOpen">
+        <NuxtIcon name="local:chevron-bold" class="fill-black duration-300" :class="{ 'rotate-180': !isOpen }" />
       </button>
       <div class="flex flex-col gap-1">
         <h2 class="text-xl">Fee</h2>

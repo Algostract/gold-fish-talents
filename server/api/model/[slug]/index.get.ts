@@ -50,6 +50,7 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
       return {
         id: slug,
         name: title,
+        description: `${title} is one of the Gold Fish Bowl's Talented Model`,
         fee: model.properties.Fee.number,
         photo: {
           image: model.cover?.type === 'external' ? model.cover.external.url.split('/')[3] : undefined,
@@ -61,7 +62,7 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
           },
           /*           location: {
                       city: 'Dummy',
-                      neighborhood: 'Dummy',
+                      area: 'Dummy',
                     }, */
           physicalAttributes: {
             height: model.properties.Height.number,

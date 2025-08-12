@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import notionNormalizeId from '~~/server/utils/notion-normalize-id'
 
 export default defineCachedEventHandler<Promise<Photo[]>>(
   async (event) => {
@@ -41,6 +40,7 @@ export default defineCachedEventHandler<Promise<Photo[]>>(
           ],
         },
       })
+
       const photos = assets.filter(({ properties }) => properties.Type?.select?.name === 'Photo' && properties.Status.status?.name === 'Release')
 
       if (!photos) throw createError({ statusCode: 500, statusMessage: 'photos is undefined' })
