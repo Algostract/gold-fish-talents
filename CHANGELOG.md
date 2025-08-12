@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.3
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.2...v0.2.3)
+
+### 🩹 Fixes
+
+- Hero image broken ([c112a98](https://github.com/Algostract/gold-fish-bowl/commit/c112a98))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.2
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.1...v0.2.2)
