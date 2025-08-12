@@ -25,22 +25,19 @@ useSchemaOrg([
   }),
 ])
 
-const { data: featuredModels } = await useFetch(
-  '/api/model',
-  {
-    query: {
-      query: '',
-      queryBy: 'name',
-      filterBy: '',
-      sortBy: 'name:asc',
-      perPage: 10,
-    },
+const { data: featuredModels } = await useFetch('/api/model', {
+  query: {
+    query: '',
+    queryBy: 'name',
+    filterBy: '',
+    sortBy: 'name:asc',
+    perPage: 10,
   },
-  { default: () => [] }
-)
+  default: () => [],
+})
 
 const currentIndex = ref(0)
-const activeModel = computed(() => featuredModels.value![currentIndex.value]!)
+const activeModel = computed(() => featuredModels.value[currentIndex.value])
 
 watchEffect((onCleanup) => {
   const interval = setInterval(() => {
@@ -92,6 +89,7 @@ const imageModifiers = computed(() => {
         <NuxtLink to="/model" class="w-full rounded-full bg-light-500 px-5 py-4 text-center text-lg text-primary-500 dark:bg-dark-500"> Get started </NuxtLink>
       </div>
       <Transition
+        v-if="activeModel"
         enter-active-class="transition-transform duration-500 ease-out "
         enter-from-class="translate-x-full"
         enter-to-class="translate-x-0"
