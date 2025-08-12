@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.2.2
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.1...v0.2.2)
+
+### 🚀 Enhancements
+
+- New video section added, ribbon color changed, ogContent added, share feature added ([9e0c66c](https://github.com/Algostract/gold-fish-bowl/commit/9e0c66c))
+
+### 📖 Documentation
+
+- Updated docker volume commend ([c0b6e00](https://github.com/Algostract/gold-fish-bowl/commit/c0b6e00))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.1
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.0...v0.2.1)
