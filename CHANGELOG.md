@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.5
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.4...v0.2.5)
+
+### 🏡 Chore
+
+- Remove prisma, added model registration form notion link ([3547cbb](https://github.com/Algostract/gold-fish-bowl/commit/3547cbb))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.4
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.3...v0.2.4)
