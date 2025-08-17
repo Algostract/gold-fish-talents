@@ -53,6 +53,9 @@ const imageModifiers = computed(() => {
     ? { fit: 'contain' } // for md and up
     : { fit: 'cover' } // for small screens
 })
+
+const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0dce40c7632ab'
+// const projectForm = "https://gold-fish-bowl.notion.site/24ee6caf5d4a80a792f0dbe77f18d134"
 </script>
 
 <template>
@@ -86,7 +89,12 @@ const imageModifiers = computed(() => {
             <MarkerModel v-for="{ id, photo, name, url } in featuredModels" :id="id" :key="id" :photo="photo" :name="name" :url="url" />
           </div>
         </div>
-        <NuxtLink to="/model" class="w-full rounded-full bg-light-500 px-5 py-4 text-center text-lg text-primary-500 dark:bg-dark-500"> Get started </NuxtLink>
+        <div class="flex gap-2">
+          <NuxtLink :to="talentModelForm" external target="_blank" rel="noopener" class="text-md w-full rounded-full bg-light-500 px-4 py-3 text-center text-primary-500 dark:bg-dark-500">
+            Register</NuxtLink
+          >
+          <NuxtLink to="/model" class="text-md w-full rounded-full bg-primary-500 px-4 py-3 text-center text-dark-500"> Get started</NuxtLink>
+        </div>
       </div>
       <Transition
         v-if="activeModel"

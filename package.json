@@ -19,7 +19,7 @@
   "scripts": {
     "prepare": "husky || true",
     "postinstall": "nuxt prepare",
-    "dev": "nuxt dev --tunnel",
+    "dev": "nuxt dev",
     "detect": "gitleaks git --verbose",
     "lint": "eslint . --fix",
     "format": "prettier . --write",
@@ -29,12 +29,6 @@
     "preview": "nuxt preview",
     "clean": "nuxt cleanup && (cd src-tauri && cargo clean)",
     "start": "node .output/server/index.mjs",
-    "prisma:pull": "prisma db pull",
-    "prisma:push": "prisma db push",
-    "prisma:seed": "prisma db seed",
-    "prisma:migrate:dev": "prisma migrate dev",
-    "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:studio": "prisma studio",
     "docker:build": "docker build --build-arg VERSION=dev --build-arg BUILD_TIME=now -t gold-fish-bowl:dev .",
     "docker:start": "docker run --detach --name gold-fish-bowl-dev --env-file .env.prod -p 4000:3000 gold-fish-bowl:dev",
     "tauri": "tauri",
@@ -42,9 +36,6 @@
     "tauri:build": "tauri build",
     "tauri:dev:mobile": "tauri android dev",
     "tauri:build:mobile": "tauri android build"
-  },
-  "prisma": {
-    "seed": "jiti prisma/seed.ts"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.48.4",
@@ -60,7 +51,6 @@
     "@nuxtjs/seo": "^3.1.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.2",
-    "@prisma/client": "6.7.0",
     "@tauri-apps/api": "^2.7.0",
     "@types/web-push": "^3.6.4",
     "@unhead/vue": "^2.0.14",
@@ -73,7 +63,6 @@
     "nuxt-auth-utils": "^0.5.23",
     "nuxt-maplibre": "^1.1.1",
     "pinia": "^3.0.3",
-    "prisma": "^6.13.0",
     "typesense": "^2.0.3",
     "uncrypto": "^0.1.3",
     "undio": "^0.2.0",
@@ -100,10 +89,7 @@
   },
   "trustedDependencies": [
     "@parcel/watcher",
-    "@prisma/client",
-    "@prisma/engines",
     "esbuild",
-    "prisma",
     "protobufjs",
     "sharp",
     "unrs-resolver"

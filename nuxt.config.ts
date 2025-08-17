@@ -99,6 +99,7 @@ export default defineNuxtConfig({
       notionDbId: '',
       vapidKey: '',
       mapApiKey: '',
+      paymentUpiInfo: '',
     },
   },
   app: {

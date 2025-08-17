@@ -25,10 +25,5 @@ misc
 !.env.example
 !.env.native
 
-# Prisma files
-prisma/*.db
-prisma/*.db-*
-prisma/generated
-
 # Static files
 static
