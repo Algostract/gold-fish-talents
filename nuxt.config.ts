@@ -1,3 +1,5 @@
+import vue from '@vitejs/plugin-vue'
+
 const host = process.env.TAURI_DEV_HOST || 'localhost'
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3000
 
@@ -53,13 +55,18 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    '@regle/nuxt',
     '@vite-pwa/nuxt',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
     'nuxt-maplibre',
+    'nuxt-nodemailer',
   ],
   nitro: {
     compressPublicAssets: true,
+    rollupConfig: {
+      plugins: [vue()],
+    },
     storage: {
       fs: {
         driver: 'fs',
@@ -95,8 +102,8 @@ export default defineNuxtConfig({
       vapidKey: '',
     },
     private: {
-      rootDir: '',
       notionDbId: '',
+      emailMetaData: '',
       vapidKey: '',
       mapApiKey: '',
       paymentUpiInfo: '',
@@ -156,7 +163,6 @@ export default defineNuxtConfig({
     disallow: ['/_nuxt/'],
   },
   pwa: {
-    strategies: 'generateSW',
     injectRegister: 'auto',
     registerType: 'autoUpdate',
     includeManifestIcons: false,
@@ -299,13 +305,49 @@ export default defineNuxtConfig({
         },
       ],
     },
-    injectManifest: {
-      globPatterns: ['**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf,wasm}'],
-      globIgnores: ['manifest**.webmanifest'],
+    workbox: {
+      globPatterns: ['**/*.{html,css,js,jpg,jpeg,png,svg,webp,ico,mp3,wav,ogg,mp4,webm,mov,m4a,aac}'],
+      runtimeCaching: [
+        {
+          urlPattern: /\.(?:html|js|css)$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'dynamic-assets',
+          },
+        },
+        {
+          urlPattern: /\.(?:png|jpg|jpeg|svg|webp|ico|mp3|wav|ogg|mp4|webm|mov|m4a|aac)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'static-assets',
+            expiration: { maxEntries: 100, maxAgeSeconds: 7 * 24 * 60 * 60 },
+          },
+        },
+      ],
+      navigateFallback: '/',
+      cleanupOutdatedCaches: true,
+      importScripts: ['/sw-push.js'],
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600,
     },
     devOptions: {
       enabled: false,
       type: 'module',
+    },
+  },
+  nodemailer: {
+    from: '',
+    host: '',
+    port: '',
+    secure: true,
+    auth: {
+      user: '',
+      pass: '',
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   },
   ...nativeConfig,

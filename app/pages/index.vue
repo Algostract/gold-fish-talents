@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['guest'],
+})
+
 const title = `Gold Fish Bowl`
 const description = `Locality‑focused, talent marketplace marketplace where models, makeup artist, designer etc can be found for commercial shoot`
 
@@ -54,27 +58,14 @@ const imageModifiers = computed(() => {
     : { fit: 'cover' } // for small screens
 })
 
-const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0dce40c7632ab'
+// const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0dce40c7632ab'
 // const projectForm = "https://gold-fish-bowl.notion.site/24ee6caf5d4a80a792f0dbe77f18d134"
 </script>
 
 <template>
-  <main class="relative isolate mx-auto flex h-dvh w-dvw max-w-[90rem] flex-col items-center justify-center gap-4 overflow-hidden px-2 md:px-4">
-    <header class="absolute left-0 right-0 top-4 mx-auto max-w-[90rem] fill-black px-4 text-black md:px-16">
-      <nav class="relative z-20 grid grid-cols-3 items-center">
-        <NuxtLink to="/" class="flex w-max items-center justify-center gap-2" aria-label="home">
-          <NuxtIcon name="local:logo" filled class="text-[80px]" />
-          <span class="hidden text-xl font-semi-bold md:inline">Gold Fish <br /><span class="text-4xl">Bowl</span></span>
-        </NuxtLink>
-        <DevOnly>
-          <div class="col-start-3 self-start justify-self-end">
-            <LazyButtonColorMode hydrate-on-visible class="block" />
-          </div>
-        </DevOnly>
-      </nav>
-    </header>
+  <div class="relative">
     <!-- Hero section -->
-    <section class="overlay relative isolate h-dvh w-dvw max-w-[90rem]">
+    <section class="overlay relative -left-2 isolate h-dvh w-dvw md:-left-4">
       <div class="absolute bottom-0 left-0 z-10 flex w-full flex-col gap-5 px-4 py-8 text-white">
         <div>
           <p class="font-sub text-xl font-semi-bold uppercase [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">
@@ -90,9 +81,7 @@ const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0
           </div>
         </div>
         <div class="flex gap-2">
-          <NuxtLink :to="talentModelForm" external target="_blank" rel="noopener" class="text-md w-full rounded-full bg-light-500 px-4 py-3 text-center text-primary-500 dark:bg-dark-500">
-            Register</NuxtLink
-          >
+          <NuxtLink to="/auth/signin" class="text-md w-full rounded-full bg-light-500 px-4 py-3 text-center text-primary-500 dark:bg-dark-500"> Sign In </NuxtLink>
           <NuxtLink to="/model" class="text-md w-full rounded-full bg-primary-500 px-4 py-3 text-center text-dark-500"> Get started</NuxtLink>
         </div>
       </div>
@@ -115,7 +104,7 @@ const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0
           class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />
       </Transition>
     </section>
-  </main>
+  </div>
 </template>
 
 <style>

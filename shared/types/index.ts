@@ -1,3 +1,4 @@
+/* Interface */
 export interface Photo {
   id: string
   title: string
@@ -142,13 +143,8 @@ export interface NotionProject {
   properties: {
     Name: {
       title: {
-        type: string
-        text: {
-          content: string
-          link: null
-        }
-        plain_text: string
-        href: null
+        type: 'title'
+        title: { plain_text: string }[]
       }[]
     }
   }
@@ -163,27 +159,39 @@ export interface NotionModel {
   cover: NotionImage
   icon: NotionImage
   properties: {
+    // Index
     Slug: {
       type: 'formula'
       formula: {
         string: string
       }
     }
+    Status: {
+      type: 'status'
+      status: {
+        name: 'Unfilled' | 'Filled' | 'Verified' | 'Active' | 'Inactive'
+      }
+    }
     Name: {
       type: 'title'
       title: { plain_text: string }[]
     }
-    Status: {
-      status: {
-        name: 'Unverified' | 'Verified' | 'Active' | 'Inactive'
-      }
+    Description: {
+      type: 'rich_text'
+      rich_text: { text: { content: string } }[]
+    }
+    Profession: {
+      type: 'rich_text'
+      rich_text: { text: { content: string } }[]
     }
     Gender: {
+      type: 'select'
       select: {
         name: 'Male' | 'Female' | 'Other'
       }
     }
     DOB: {
+      type: 'date'
       date: {
         start: string
       }
@@ -216,6 +224,14 @@ export interface NotionModel {
       type: 'phone_number'
       phone_number: string
     }
+    Whatsapp: {
+      type: 'url'
+      url: string
+    }
+    Facebook: {
+      type: 'url'
+      url: string
+    }
     Instagram: {
       type: 'url'
       url: string
@@ -226,8 +242,6 @@ export interface NotionModel {
       has_more: false
     }
   }
-  url: string
-  public_url: null
 }
 
 export interface NotionAsset {

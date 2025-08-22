@@ -1,7 +1,12 @@
 declare module '#auth-utils' {
   interface User {
-    // Add your own fields
     id: string
+    name: string
+    avatar?: string
+    email: string
+    createdAt: string
+    updatedAt: string
+    isProfileComplete: boolean
   }
 
   /*  interface UserSession {
