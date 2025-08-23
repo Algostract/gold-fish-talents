@@ -1,5 +1,6 @@
 export async function findOrCreateNotionUser(authUser: { sub?: string; name?: string; picture?: string; email: string }): Promise<{
   id: string
+  slug: string
   name: string
   avatar?: string
   email: string
@@ -23,6 +24,7 @@ export async function findOrCreateNotionUser(authUser: { sub?: string; name?: st
 
     return {
       id: data.id,
+      slug: data.properties.Slug.formula.string,
       name: notionTextStringify(data.properties.Name.title),
       avatar: data.cover?.type === 'external' ? data.cover?.external.url : authUser.picture,
       email: data.properties.Email.email || '',
@@ -54,6 +56,7 @@ export async function findOrCreateNotionUser(authUser: { sub?: string; name?: st
 
   return {
     id: data.id,
+    slug: data.properties.Slug.formula.string,
     name: notionTextStringify(data.properties.Name.title),
     avatar: data.cover?.external.url || authUser.picture,
     email: data.properties.Email.email || '',
@@ -71,6 +74,7 @@ export default defineOAuthGoogleEventHandler({
     await setUserSession(event, {
       user: {
         id: user.id,
+        slug: user.slug,
         name: user.name,
         avatar: user.avatar,
         email: user.email,

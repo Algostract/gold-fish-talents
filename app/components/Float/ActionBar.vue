@@ -40,19 +40,17 @@ async function handleAction(action: Action) {
 </script>
 
 <template>
-  <div class="fixed bottom-5 left-0 right-0 z-50">
-    <nav class="relative mx-auto w-fit rounded-full bg-dark-500 px-9 py-1 shadow-2xl" aria-label="Primary">
-      <div class="relative flex gap-8">
-        <button
-          v-for="item in urls"
-          :key="item.id"
-          class="relative z-10 flex flex-1 select-none flex-col items-center justify-center py-2 transition-colors duration-300 ease-in-out"
-          :class="item.action === 'share' ? 'fill-black text-[36px] text-black' : 'fill-white text-[28px] text-white'"
-          @click="handleAction(item.action)">
-          <NuxtIcon :name="item.icon" class="" />
-        </button>
-        <span aria-hidden="true" class="absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400 transition-all duration-300 ease-out" />
-      </div>
-    </nav>
-  </div>
+  <nav class="fixed bottom-5 left-0 right-0 z-50 mx-auto w-fit rounded-full bg-dark-500 px-9 py-1 shadow-2xl" aria-label="Primary">
+    <div class="relative flex gap-8">
+      <button
+        v-for="item in urls"
+        :key="item.id"
+        class="relative z-10 flex flex-1 select-none flex-col items-center justify-center py-2 transition-colors duration-300 ease-in-out"
+        :class="item.action === 'share' ? 'fill-black text-[36px] text-black' : 'fill-white text-[28px] text-white'"
+        @click="handleAction(item.action)">
+        <NuxtIcon :name="item.icon" class="" />
+      </button>
+      <span aria-hidden="true" class="absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400 transition-all duration-300 ease-out" />
+    </div>
+  </nav>
 </template>

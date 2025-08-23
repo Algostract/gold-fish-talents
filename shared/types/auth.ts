@@ -20,9 +20,14 @@ export const modelFormSchema = z.object({
   name: z.string().min(2, 'Please enter your full name'),
   dob: z.string().nonempty('Please provide date of birth'),
   gender: z.enum(['male', 'female', 'other']),
+  // education
   profession: z.string().min(2, 'Enter your profession'),
+  // locality
+  // coordinate: z.string(),
   height: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(30, 'Height looks too small').max(300, 'Height looks too large')),
   weight: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(20, 'Weight looks too small').max(500, 'Weight looks too large')),
+  shoulder: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(30, 'Shoulder looks too small').max(70, 'Shoulder looks too large')),
+  waist: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(50, 'Waist looks too small').max(150, 'Waist looks too large')),
   phone: z
     .string()
     .min(7, 'Enter valid phone number')

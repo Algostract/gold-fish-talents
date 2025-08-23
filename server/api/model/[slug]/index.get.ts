@@ -67,13 +67,14 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
           physicalAttributes: {
             height: model.properties.Height.number,
             weight: model.properties.Weight.number,
+            shoulder: model.properties.Shoulder.number,
+            waist: model.properties.Waist.number,
             /*             bodyType: 'Mesomorph',
                         skinTone: 'Wheatish',
                         eyeColor: 'Hazel',
                         hairColor: 'DarkBrown',
                         shoeSize: 7,
                         bust: 86,
-                        waist: 64,
                         hips: 90,
                         tattoos: 'Small lotus on right wrist',
                         armpitHair: 'Trimmed', */

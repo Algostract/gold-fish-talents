@@ -35,13 +35,14 @@ export interface DetailedModel extends Model {
     physicalAttributes: {
       height: number
       weight: number
+      shoulder: number
+      waist: number
       bodyType: 'Ectomorph' | 'Mesomorph' | 'Endomorph'
       skinTone: string
       eyeColor: string
       hairColor: string
       shoeSize: number
       bust: number
-      waist: number
       hips: number
       tattoos: string
       armpitHair: 'None' | 'Trimmed' | 'Natural'

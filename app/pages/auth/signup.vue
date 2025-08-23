@@ -14,8 +14,11 @@ const { r$ } = useRegleSchema(
     dob: '',
     gender: 'female',
     profession: '',
+    // coordinate:'',
     height: undefined,
     weight: undefined,
+    shoulder: undefined,
+    waist: undefined,
     phone: '',
     sameAsPhone: false,
     whatsapp: '',
@@ -165,6 +168,36 @@ async function onSubmit() {
               class="text-slate-200 w-full rounded-lg bg-transparent px-4 py-3 ring-2 ring-dark-600 placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-0"
               :aria-invalid="showError('weight') ? 'true' : 'false'" />
             <p v-if="showError('weight')" class="text-xs text-alert-500">{{ r$.weight.$errors[0] }}</p>
+          </div>
+
+          <!-- Shoulder -->
+          <div class="flex flex-col gap-3">
+            <label for="shoulder" class="font-medium text-slate-300 text-sm after:ml-1 after:text-alert-500 after:content-['*']">Shoulder (cm)</label>
+            <input
+              id="shoulder"
+              v-model.number="r$.$value.shoulder"
+              type="number"
+              min="20"
+              max="500"
+              placeholder="60"
+              class="text-slate-200 w-full rounded-lg bg-transparent px-4 py-3 ring-2 ring-dark-600 placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-0"
+              :aria-invalid="showError('shoulder') ? 'true' : 'false'" />
+            <p v-if="showError('shoulder')" class="text-xs text-alert-500">{{ r$.shoulder.$errors[0] }}</p>
+          </div>
+
+          <!-- Waist -->
+          <div class="flex flex-col gap-3">
+            <label for="waist" class="font-medium text-slate-300 text-sm after:ml-1 after:text-alert-500 after:content-['*']">Waist (cm)</label>
+            <input
+              id="waist"
+              v-model.number="r$.$value.waist"
+              type="number"
+              min="20"
+              max="500"
+              placeholder="60"
+              class="text-slate-200 w-full rounded-lg bg-transparent px-4 py-3 ring-2 ring-dark-600 placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-0"
+              :aria-invalid="showError('waist') ? 'true' : 'false'" />
+            <p v-if="showError('waist')" class="text-xs text-alert-500">{{ r$.waist.$errors[0] }}</p>
           </div>
         </div>
 
