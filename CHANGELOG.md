@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.2.6
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.5...v0.2.6)
+
+### 🚀 Enhancements
+
+- Email auth added, auth guard added ([1951639](https://github.com/Algostract/gold-fish-bowl/commit/1951639))
+- Enhance model forms with shoulder and waist measurements, update user session with slug ([7f00c8f](https://github.com/Algostract/gold-fish-bowl/commit/7f00c8f))
+
+### 🏡 Chore
+
+- Remove unused model image ([7ee6f00](https://github.com/Algostract/gold-fish-bowl/commit/7ee6f00))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.5
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.4...v0.2.5)
