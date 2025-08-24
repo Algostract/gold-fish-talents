@@ -31,20 +31,6 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
         throw createError({ statusCode: 404, statusMessage: `model ${slug} not found` })
       }
 
-      // const [aW, aH] = model.properties //.properties['Aspect ratio'].select.name.split(':').map((item) => parseInt(item))
-
-      /* return {
-              id: slug,
-              title: notionTextStringify(model.properties.Name.title),
-              description: notionTextStringify(model.properties.Description.rich_text),
-              image: model.cover?.type === 'external' ? model.cover.external.url.split('/')[3] : undefined,
-              aspectRatio: aW / aH,
-              category: model.properties.Segment.select.name,
-              featured: model.properties.Featured.number,
-              gallery: model.properties.Gallery.checkbox,
-              url: `/photo/${slug}`,
-            } as PhotoDetails */
-
       const title = notionTextStringify(model.properties.Name.title)
 
       return {
@@ -79,8 +65,11 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
                         tattoos: 'Small lotus on right wrist',
                         armpitHair: 'Trimmed', */
           },
-          /*           professionalBackground: {
-                      profession: 'FreelanceModel',
+          professionalBackground: {
+            profession: notionTextStringify(model.properties.Profession.rich_text),
+          },
+          /*         
+,
                       education: 'BachelorArts',
                       hasPassport: true,
                       experienceYears: 3,

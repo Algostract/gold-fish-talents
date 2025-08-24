@@ -2,6 +2,7 @@
 import type { z } from 'zod'
 
 definePageMeta({
+  layout: false,
   middleware: ['auth'],
 })
 
@@ -12,7 +13,7 @@ const {
 const { proxy: gaProxy } = useScriptGoogleAnalytics()
 
 const { user } = useUserSession()
-const { data } = await useFetch(`/api/model/${user.value!.slug}`)
+const { data } = await useFetch(`/api/model/dashboard`)
 
 const modelUpdateFormSchema = modelFormSchema.pick({
   profession: true,
@@ -90,7 +91,6 @@ async function handleAction(action: Action) {
       gaProxy.gtag('event', 'share', { talent: shareAsset.value.name, type: 'model' })
       break
     }
-
     case 'models': {
       navigateTo('/model')
       break
@@ -101,23 +101,22 @@ async function handleAction(action: Action) {
       break
   }
 }
+
+const profileImg = computed(() =>
+  data.value?.photo?.image ? { provider: 'uploadcare', src: `${data.value.photo.image}/-/crop/face/200px200p/-/crop/1:1/50p,30p/` } : { provider: 'ipx', src: 'https://api.dicebear.com/9.x/glass/svg' }
+)
 </script>
 
 <template>
-  <main class="flex min-h-screen w-full flex-col items-center justify-center gap-8 p-5">
+  <main class="mb-20 flex min-h-screen w-full flex-col items-center justify-center gap-8 p-5">
     <!-- Profile Picture -->
     <div v-if="data" class="flex flex-col items-center gap-6">
-      <NuxtImg
-        :src="`${data.photo.image}/-/crop/face/200px200p/-/crop/1:1/50p,30p/`"
-        :alt="data.name"
-        width="80"
-        height="80"
-        loading="eager"
-        fit="cover"
-        class="size-3/4 rounded-full object-cover object-top" />
+      <NuxtImg :provider="profileImg.provider" :src="profileImg.src" :alt="data.name" width="128" height="128" loading="eager" fit="cover" class="rounded-full object-cover object-top" />
       <h2 class="font-semibold text-lg text-white">{{ data.name }}</h2>
     </div>
-    <section class="flex w-full max-w-2xl flex-col gap-6 rounded-2xl bg-dark-500 p-6 shadow-xl ring-1 ring-dark-600" aria-labelledby="signup-heading">
+    <!-- Media Tab -->
+    <!-- Profile Details Tab -->
+    <section class="flex w-full max-w-2xl flex-col gap-6 rounded-2xl bg-dark-400 shadow-xl" aria-labelledby="signup-heading">
       <form class="flex flex-col gap-5" novalidate @submit.prevent="onUpdate">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <!-- Profession -->
@@ -162,7 +161,7 @@ async function handleAction(action: Action) {
           </div>
           <!-- Shoulder -->
           <div class="flex flex-col gap-3">
-            <label for="shoulder" class="font-medium text-slate-300 text-sm after:ml-1 after:text-alert-500 after:content-['*']">Shoulder (cm)</label>
+            <label for="shoulder" class="font-medium text-slate-300 text-sm after:ml-1">Shoulder (cm)</label>
             <input
               id="shoulder"
               v-model.number="r$.$value.shoulder"
@@ -177,7 +176,7 @@ async function handleAction(action: Action) {
 
           <!-- Waist -->
           <div class="flex flex-col gap-3">
-            <label for="waist" class="font-medium text-slate-300 text-sm after:ml-1 after:text-alert-500 after:content-['*']">Waist (cm)</label>
+            <label for="waist" class="font-medium text-slate-300 text-sm after:ml-1">Waist (cm)</label>
             <input
               id="waist"
               v-model.number="r$.$value.waist"
@@ -236,16 +235,16 @@ async function handleAction(action: Action) {
         </button>
       </form>
     </section>
-    <!-- <FloatActionBar :share-asset="shareAsset" :asset-type="'model'" /> -->
+    <!-- Float action button -->
     <nav class="fixed bottom-5 left-0 right-0 z-50 mx-auto w-fit rounded-full bg-dark-500 px-9 py-1 shadow-2xl" aria-label="Primary">
       <div class="relative flex gap-8">
         <button
           v-for="item in urls"
           :key="item.id"
           class="relative z-10 flex flex-1 select-none flex-col items-center justify-center py-2 transition-colors duration-300 ease-in-out"
-          :class="item.action === 'share' ? 'fill-black text-[36px] text-black' : 'fill-white text-[28px] text-white'"
+          :class="item.action === 'models' ? 'fill-black text-[36px] text-black' : 'fill-white text-[28px] text-white'"
           @click="handleAction(item.action)">
-          <NuxtIcon :name="item.icon" class="" />
+          <NuxtIcon :name="item.icon" />
         </button>
         <span aria-hidden="true" class="absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-400 transition-all duration-300 ease-out" />
       </div>

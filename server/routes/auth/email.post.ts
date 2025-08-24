@@ -47,8 +47,8 @@ export default defineEventHandler(async (event) => {
 
     if (!body.otp) {
       const code = generateCode(8, 'alphanumeric')
-      isSuccess = await sendEmail('otp', [{ otp: code, toEmail: body.email }])
-      await authCodeStorage.setItem(body.email, { type: 'email', code, expiresAt: Date.now() + 5 * 60 * 1000 })
+      isSuccess = await sendEmail('otp', [{ otp: code, toEmail: import.meta.env.NODE_ENV === 'production' ? body.email : 'admin@shirsendu-bairagi.dev' }])
+      await authCodeStorage.setItem(body.email, { type: 'email', code, expiresAt: Date.now() + 10 * 60 * 1000 })
     } else {
       const authData = await authCodeStorage.getItem(body.email)
 
@@ -60,15 +60,15 @@ export default defineEventHandler(async (event) => {
         isSuccess = true
         const user = await findOrCreateNotionUser({ email: body.email })
 
-        await setUserSession(event, {
+        await replaceUserSession(event, {
           user: {
             id: user.id,
-            slug: user.slug,
             name: user.name,
             avatar: user.avatar,
             email: user.email,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
+            isProfileComplete: user.isProfileComplete,
           },
           logged_at: new Date().toISOString(),
         })

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: false,
+})
+
 const colorMode = useColorMode()
 
 const pageParams = ref({

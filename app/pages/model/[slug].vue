@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: false,
+})
+
 const {
   public: { siteUrl },
 } = useRuntimeConfig()
@@ -6,12 +10,11 @@ const {
 const route = useRoute()
 const slug = route.params.slug!.toString()
 const { data: model } = await useFetch(`/api/model/${slug}`)
+if (!model.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Model not found' })
+}
 const { data: photos } = useFetch(`/api/model/${slug}/photo`, { default: () => [] })
 const { data: videos } = useFetch(`/api/model/${slug}/video`, { default: () => [] })
-
-if (!model.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
-}
 
 const title = `${model.value?.name}`
 const description = `${model.value?.description}`

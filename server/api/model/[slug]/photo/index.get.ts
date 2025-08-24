@@ -27,6 +27,8 @@ export default defineCachedEventHandler<Promise<Photo[]>>(
         },
       })
 
+      if (!models.length) throw createError({ statusCode: 404, statusMessage: 'Photo not found', fatal: true })
+
       const modelId = notionNormalizeId(models[0].id)
       const assets = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
         filter: {

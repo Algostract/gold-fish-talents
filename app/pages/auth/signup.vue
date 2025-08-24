@@ -65,7 +65,7 @@ async function onSubmit() {
   await execute()
 
   if (status.value === 'success') {
-    navigateTo('/model/dashboard')
+    await navigateTo('/model/dashboard')
   }
 }
 </script>
