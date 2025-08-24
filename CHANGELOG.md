@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.7
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.6...v0.2.7)
+
+### 🚀 Enhancements
+
+- Update authentication flow and improve dashboard page ([41e0650](https://github.com/Algostract/gold-fish-bowl/commit/41e0650))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.6
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.5...v0.2.6)
