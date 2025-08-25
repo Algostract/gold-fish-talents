@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.8
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.7...v0.2.8)
+
+### 🚀 Enhancements
+
+- Model dashboard media tab added ([4a9147a](https://github.com/Algostract/gold-fish-bowl/commit/4a9147a))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.7
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.6...v0.2.7)
