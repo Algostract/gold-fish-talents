@@ -108,6 +108,9 @@ export default defineNuxtConfig({
       mapApiKey: '',
       paymentUpiInfo: '',
     },
+    session: {
+      password: '',
+    },
   },
   app: {
     head: {
@@ -325,6 +328,7 @@ export default defineNuxtConfig({
         },
       ],
       navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
       cleanupOutdatedCaches: true,
       importScripts: ['/sw-push.js'],
     },

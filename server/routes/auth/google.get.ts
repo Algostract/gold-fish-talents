@@ -68,18 +68,22 @@ export default defineOAuthGoogleEventHandler({
   async onSuccess(event, { user: data }) {
     const user = await findOrCreateNotionUser(data)
 
-    await setUserSession(event, {
-      user: {
-        id: user.id,
-        name: user.name,
-        avatar: user.avatar,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        isProfileComplete: user.isProfileComplete,
+    await setUserSession(
+      event,
+      {
+        user: {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          email: user.email,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          isProfileComplete: user.isProfileComplete,
+        },
+        logged_at: new Date().toISOString(),
       },
-      logged_at: new Date().toISOString(),
-    })
+      { maxAge: 30 * 24 * 60 * 60 * 1000 }
+    )
 
     return sendRedirect(event, user.isProfileComplete ? '/model/dashboard' : '/auth/signup')
   },

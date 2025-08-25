@@ -60,18 +60,22 @@ export default defineEventHandler(async (event) => {
         isSuccess = true
         const user = await findOrCreateNotionUser({ email: body.email })
 
-        await replaceUserSession(event, {
-          user: {
-            id: user.id,
-            name: user.name,
-            avatar: user.avatar,
-            email: user.email,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-            isProfileComplete: user.isProfileComplete,
+        await setUserSession(
+          event,
+          {
+            user: {
+              id: user.id,
+              name: user.name,
+              avatar: user.avatar,
+              email: user.email,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt,
+              isProfileComplete: user.isProfileComplete,
+            },
+            logged_at: new Date().toISOString(),
           },
-          logged_at: new Date().toISOString(),
-        })
+          { maxAge: 30 * 24 * 60 * 60 * 1000 }
+        )
 
         navigateTo = user.isProfileComplete ? '/model/dashboard' : '/auth/signup'
       }

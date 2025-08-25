@@ -74,13 +74,17 @@ export default defineEventHandler(async (event) => {
     })
 
     const { user } = await getUserSession(event)
-    await replaceUserSession(event, {
-      user: {
-        ...user,
-        isProfileComplete: true,
+    await replaceUserSession(
+      event,
+      {
+        user: {
+          ...user,
+          isProfileComplete: true,
+        },
+        logged_at: new Date().toISOString(),
       },
-      logged_at: new Date().toISOString(),
-    })
+      { maxAge: 30 * 24 * 60 * 60 * 1000 }
+    )
   }
 
   return { status: 'OK' }

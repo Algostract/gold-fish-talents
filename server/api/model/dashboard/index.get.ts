@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const slug = data.properties.Slug.formula.string
   const title = notionTextStringify(data.properties.Name.title)
+
   return {
     id: slug,
     name: title,
@@ -82,6 +83,24 @@ export default defineEventHandler(async (event) => {
     rating: 0,
     reviewCount: 0,
     coordinate: [data.properties.Longitude.number, data.properties.Latitude.number],
+    projects: data.properties.Project.relation.map((projectId) => ({
+      notionId: projectId,
+      id: '',
+      datetime: new Date().toISOString(),
+      location: {
+        name: 'Kattus Villa',
+        address: 'Kattus Villa',
+      },
+      image: '',
+      urls: {
+        direction: '',
+        call: '',
+      },
+    })),
+    media: {
+      photo: await $fetch(`/api/model/${slug}/photo`),
+      video: await $fetch(`/api/model/${slug}/video`),
+    },
     isFeatured: false,
     url: `/model/${slug}`,
   }
