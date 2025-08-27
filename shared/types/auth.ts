@@ -22,8 +22,12 @@ export const modelFormSchema = z.object({
   gender: z.enum(['male', 'female', 'other']),
   // education
   profession: z.string().min(2, 'Enter your profession'),
-  // locality
-  // coordinate: z.string(),
+  coordinate: z
+    .tuple([
+      z.number().min(-90).max(90), // latitude
+      z.number().min(-180).max(180), // longitude
+    ])
+    .describe('Coordinate [latitude, longitude]'),
   height: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(30, 'Height looks too small').max(300, 'Height looks too large')),
   weight: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(20, 'Weight looks too small').max(500, 'Weight looks too large')),
   shoulder: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().min(30, 'Shoulder looks too small').max(70, 'Shoulder looks too large')),

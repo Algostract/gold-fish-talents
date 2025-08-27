@@ -3,8 +3,6 @@ definePageMeta({
   layout: false,
 })
 
-const colorMode = useColorMode()
-
 const pageParams = ref({
   perPage: 8,
   page: 1,
@@ -15,6 +13,8 @@ const searchParams = ref<SearchParams>({
   queryBy: 'name',
   filterBy: '',
   sortBy: 'name:asc',
+  perPage: 8,
+  page: 1,
 })
 
 const allParams = computed(() => ({
@@ -61,8 +61,9 @@ useInfiniteScroll(
 
 const { state: viewMode, next: changeViewMode } = useCycleList(['list', 'map'])
 
-const mapStyle = computed(() => `/api/map?theme=${colorMode.value === 'dark' ? 'dark' : 'light'}`)
+const colorMode = useColorMode()
 
+const mapStyle = computed(() => `/api/map?theme=${colorMode.value === 'dark' ? 'dark' : 'light'}`)
 // TODO: Get user location when viewMode is changed to map
 const center: [number, number] = [88.4306945, 22.409649]
 const zoom = 16
@@ -86,10 +87,12 @@ const zoom = 16
       class="target scrollbar-hidden relative col-span-full col-start-1 block h-full items-center justify-items-center overflow-y-auto p-2 md:col-start-2">
       <div class="mx-auto mb-20 grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:gap-8">
         <CardModel
-          v-for="{ id, name, fee, photo, rating, reviewCount, coordinate, isFeatured, url } in allModels"
+          v-for="{ id, name, gender, age, fee, photo, rating, reviewCount, coordinate, isFeatured, url } in allModels"
           :id="id"
           :key="id"
           :name="name"
+          :gender="gender"
+          :age="age"
           :fee="fee"
           :photo="photo"
           :rating="rating"
@@ -102,7 +105,7 @@ const zoom = 16
     </section>
     <section v-show="viewMode !== 'list'" class="col-span-full col-start-1 row-span-full row-start-2 h-full p-2 md:col-start-2">
       <ClientOnly>
-        <MglMap :map-style="mapStyle" :center="center" :zoom="zoom">
+        <MglMap :map-style="mapStyle" :center="center" :zoom="zoom" :attribution-control="false">
           <!-- <MglNavigationControl /> -->
           <!-- <MglFullscreenControl /> -->
           <!-- <MglScaleControl /> -->

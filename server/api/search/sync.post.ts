@@ -1,3 +1,5 @@
+import { differenceInYears, parseISO } from 'date-fns'
+
 export interface TypesenseModel extends Omit<Model, 'url' | 'isFavorite' | 'photo'> {
   status: string
   'photo.title': string
@@ -16,10 +18,12 @@ export async function syncSearchDb() {
     .map(({ cover, properties }): TypesenseModel | null => {
       const title = notionTextStringify(properties.Name.title)
 
-      if (!(properties.Latitude.number && properties.Longitude.number)) return null
+      if (!(properties.Latitude.number && properties.Longitude.number && properties.DOB.date?.start && cover?.type === 'external')) return null
 
       return {
         id: properties.Slug.formula.string,
+        gender: properties.Gender.select.name as Gender,
+        age: differenceInYears(new Date(), parseISO(properties.DOB.date.start)),
         name: title,
         status: properties.Status.status.name,
         fee: properties.Fee.number ?? 0,

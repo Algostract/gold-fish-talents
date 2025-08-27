@@ -1,107 +1,87 @@
 export default defineEventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  try {
+    const { user } = await requireUserSession(event)
 
-  const config = useRuntimeConfig()
-  const notionDbId = config.private.notionDbId as unknown as NotionDB
+    const config = useRuntimeConfig()
+    const notionDbId = config.private.notionDbId as unknown as NotionDB
 
-  const query = await notion.databases.query({
-    database_id: notionDbId.model,
-    filter: {
-      property: 'Email',
-      email: { equals: user.email },
-    },
-  })
-
-  const data = query.results[0] as unknown as NotionModel
-
-  /*   return {
-      email: data.properties.Email.email,
-      phone: data.properties.Phone.phone_number,
-      whatsapp: data.properties.Whatsapp.url,
-      facebook: data.properties.Facebook.url,
-      instagram: data.properties.Instagram.url,
-    } */
-
-  const slug = data.properties.Slug.formula.string
-  const title = notionTextStringify(data.properties.Name.title)
-
-  return {
-    id: slug,
-    name: title,
-    description: `${title} is one of the Gold Fish Bowl's Talented Model`,
-    fee: data.properties.Fee.number,
-    photo: {
-      image: data.cover?.type === 'external' ? data.cover.external.url.split('/')[3] : undefined,
-    },
-    details: {
-      personalInfo: {
-        gender: data.properties.Gender.select.name,
-        dob: data.properties.DOB.date.start,
+    const query = await notion.databases.query({
+      database_id: notionDbId.model,
+      filter: {
+        property: 'Email',
+        email: { equals: user.email },
       },
-      /*           location: {
-                  city: 'Dummy',
-                  area: 'Dummy',
-                }, */
-      physicalAttributes: {
-        height: data.properties.Height.number,
-        weight: data.properties.Weight.number,
-        shoulder: data.properties.Shoulder.number,
-        waist: data.properties.Waist.number,
-        /*             bodyType: 'Mesomorph',
-                    skinTone: 'Wheatish',
-                    eyeColor: 'Hazel',
-                    hairColor: 'DarkBrown',
-                    shoeSize: 7,
-                    bust: 86,
-                    hips: 90,
-                    tattoos: 'Small lotus on right wrist',
-                    armpitHair: 'Trimmed', */
+    })
+    const model = query.results[0] as unknown as NotionModel
+
+    const projects = (
+      await notion.databases.query({
+        database_id: notionDbId.project,
+        filter: {
+          property: 'Model',
+          relation: { contains: model.id },
+        },
+      })
+    ).results as unknown as NotionProject[]
+
+    const slug = model.properties.Slug.formula.string
+    const title = notionTextStringify(model.properties.Name.title)
+
+    const photos = await $fetch(`/api/model/${slug}/photo`)
+    const videos = await $fetch(`/api/model/${slug}/video`)
+
+    return {
+      id: slug,
+      name: title,
+      photo: {
+        image: model.cover?.type === 'external' ? model.cover.external.url.split('/')[3] : undefined,
       },
-      professionalBackground: {
-        profession: notionTextStringify(data.properties.Profession.rich_text),
-      },
-      /*             education: 'BachelorArts',
-                  hasPassport: true,
-                  experienceYears: 3,
-                }, */
-      /*           skillsInterests: {
-                  languages: ['Hindi', 'English', 'Bhojpuri'],
-                  hobbies: ['Photography', 'Yoga', 'Travel'],
-                  comfortableTimings: true,
-                  travelOutstation: true,
-                  travelInternational: false,
-                }, */
-      /*           shootPreferences: {
-                  preferredGenres: ['Acting', 'PrintEditorial', 'EthnicFashion', 'WesternFashion', 'RampRunway', 'MusicVideos', 'WebSeries', 'Anchoring'],
-                  preferredWardrobe: ['EthnicWear', 'WesternWear', 'SwimSuits'],
-                  experiencedGenres: ['Commercial', 'TV Serial', 'Short Film'],
-                }, */
-      /*           healthSafety: {
-                  allergies: 'None',
-                }, */
-    },
-    rating: 0,
-    reviewCount: 0,
-    coordinate: [data.properties.Longitude.number, data.properties.Latitude.number],
-    projects: data.properties.Project.relation.map((projectId) => ({
-      notionId: projectId,
-      id: '',
-      datetime: new Date().toISOString(),
-      location: {
-        name: 'Kattus Villa',
-        address: 'Kattus Villa',
-      },
-      image: '',
-      urls: {
-        direction: '',
-        call: '',
-      },
-    })),
-    media: {
-      photo: await $fetch(`/api/model/${slug}/photo`),
-      video: await $fetch(`/api/model/${slug}/video`),
-    },
-    isFeatured: false,
-    url: `/model/${slug}`,
+      dob: model.properties.DOB.date.start,
+      gender: model.properties.Gender.select.name.toLowerCase() as Gender,
+      profession: notionTextStringify(model.properties.Profession.rich_text),
+      coordinate: [model.properties.Longitude.number, model.properties.Latitude.number] as [number, number],
+      height: model.properties.Height.number,
+      weight: model.properties.Weight.number,
+      shoulder: model.properties.Shoulder.number,
+      waist: model.properties.Waist.number,
+      phone: model.properties.Phone.phone_number,
+      sameAsPhone: false,
+      whatsapp: model.properties.Whatsapp.url,
+      fee: model.properties.Fee.number,
+      facebook: '',
+      instagram: '',
+      why: notionTextStringify(model.properties.Description.rich_text),
+      projects: await Promise.all(
+        projects.map<Promise<Project>>(async ({ id, cover, properties }) => {
+          return {
+            id: id,
+            name: notionTextStringify(properties.Name.title),
+            image: cover?.type === 'external' ? cover.external.url.split('/')[3] : undefined,
+            datetime: properties['Shoot Date/Time'].date.start,
+            location: {
+              name: notionTextStringify(properties.Name.title),
+              address: notionTextStringify(properties.Address.rich_text),
+            },
+            mapUrl: properties.Map.url,
+            helpline: '+919433128726',
+            media: {
+              photo: photos.filter(({ projectId }) => projectId === id),
+              video: videos.filter(({ projectId }) => projectId === id),
+            },
+          }
+        })
+      ),
+    }
+  } catch (error: unknown) {
+    if (error instanceof Error && 'statusCode' in error) {
+      throw error
+    }
+
+    console.error('API  model/dashboard/index GET', error)
+
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Some Unknown Error Found',
+    })
   }
 })

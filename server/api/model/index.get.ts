@@ -21,7 +21,9 @@ export default defineEventHandler<Promise<Model[]>>(async (event) => {
       response.hits?.map<Model>(({ document }) => ({
         id: document.id,
         name: document.name,
-        fee: 1,
+        gender: document.gender,
+        age: document.age,
+        fee: document.fee,
         photo: {
           title: document['photo.title'],
           image: document['photo.image'],
@@ -36,6 +38,10 @@ export default defineEventHandler<Promise<Model[]>>(async (event) => {
       })) ?? []
     )
   } catch (error) {
+    if (error instanceof Error && 'statusCode' in error) {
+      throw error
+    }
+
     console.error('API model/index GET', error)
 
     throw createError({

@@ -6,68 +6,91 @@ export interface Photo {
   description: string
   featured: boolean
   aspectRatio: number
+  projectId: string
   url: string
 }
+
+export type Gender = 'male' | 'female' | 'other'
 
 export interface Model {
   id: string
   name: string
+  gender: 'male' | 'female' | 'other'
+  age: number
   fee: number
+  coordinate: [number, number]
   photo: Pick<Photo, 'title' | 'description' | 'image' | 'aspectRatio'>
   rating: number
   reviewCount: number
   isFeatured?: boolean
-  coordinate: [number, number]
   url: string
 }
 
 export interface DetailedModel extends Model {
   description: string
   details: {
-    personalInfo: {
-      gender: 'male' | 'female'
-      age: number
-    }
-    location: {
+    /* location: {
       city: string
       neighborhood: string
-    }
+    } */
     physicalAttributes: {
       height: number
       weight: number
       shoulder: number
       waist: number
-      bodyType: 'Ectomorph' | 'Mesomorph' | 'Endomorph'
+      tattoos: string
+      /* bodyType: 'Ectomorph' | 'Mesomorph' | 'Endomorph'
       skinTone: string
       eyeColor: string
       hairColor: string
       shoeSize: number
       bust: number
       hips: number
-      tattoos: string
-      armpitHair: 'None' | 'Trimmed' | 'Natural'
+      armpitHair: 'None' | 'Trimmed' | 'Natural' */
     }
     professionalBackground: {
       profession: string
       education: string
-      hasPassport: boolean
-      experienceYears: number
+      /* hasPassport: boolean
+       experienceYears: number */
     }
-    skillsInterests: {
-      languages: string[]
-      hobbies: string[]
-      comfortableTimings: boolean
-      travelOutstation: boolean
-      travelInternational: boolean
-    }
-    shootPreferences: {
+    /*  skillsInterests: {
+       languages: string[]
+       hobbies: string[]
+       comfortableTimings: boolean
+       travelOutstation: boolean
+       travelInternational: boolean
+     } */
+    /* shootPreferences: {
       preferredGenres: ('Acting' | 'PrintEditorial' | 'EthnicFashion' | 'WesternFashion' | 'RampRunway' | 'MusicVideos' | 'WebSeries' | 'Anchoring')[]
       preferredWardrobe: ('EthnicWear' | 'WesternWear' | 'SwimSuits')[]
       experiencedGenres: string[]
-    }
+    } */
     healthSafety: {
       allergies: string
     }
+  }
+  projects: Project[]
+  media: {
+    photo: Photo[]
+    video: Video[]
+  }
+}
+
+export interface Project {
+  id: string
+  name: string
+  image?: string
+  datetime: string
+  location: {
+    name: string
+    address: string
+  }
+  mapUrl: string
+  helpline: string
+  media: {
+    photo: Photo[]
+    video: Video[]
   }
 }
 
@@ -76,6 +99,8 @@ export interface SearchParams {
   queryBy: string
   filterBy: string
   sortBy: string
+  perPage: number
+  page: number
 }
 
 export interface PaginatedSearchParams extends SearchParams {
@@ -109,11 +134,12 @@ export interface Video {
   // category: Category
   featured: boolean
   sources: Source[]
+  projectId: string
   url: string
 }
 
 /* Server Only */
-export const resourceTypes = ['asset', 'model', 'studio'] as const
+export const resourceTypes = ['project', 'model', 'studio', 'asset'] as const
 
 export type ResourceType = (typeof resourceTypes)[number]
 
@@ -143,10 +169,33 @@ export interface NotionProject {
   icon: NotionImage
   properties: {
     Name: {
-      title: {
-        type: 'title'
-        title: { plain_text: string }[]
-      }[]
+      type: 'title'
+      title: { plain_text: string }[]
+    }
+    Address: {
+      type: 'rich_text'
+      rich_text: { text: { content: string } }[]
+    }
+    Map: {
+      type: 'url'
+      url: string
+    }
+    'Shoot Date/Time': {
+      type: 'date'
+      date: {
+        start: string
+        end: string
+      }
+    }
+    Model: {
+      type: 'relation'
+      relation: { id: string }[]
+      has_more: boolean
+    }
+    Asset: {
+      type: 'relation'
+      relation: { id: string }[]
+      has_more: boolean
     }
   }
   url: string
@@ -161,6 +210,10 @@ export interface NotionModel {
   icon: NotionImage
   properties: {
     // Index
+    Name: {
+      type: 'title'
+      title: { plain_text: string }[]
+    }
     Slug: {
       type: 'formula'
       formula: {
@@ -172,10 +225,6 @@ export interface NotionModel {
       status: {
         name: 'Unfilled' | 'Filled' | 'Verified' | 'Active' | 'Inactive'
       }
-    }
-    Name: {
-      type: 'title'
-      title: { plain_text: string }[]
     }
     Description: {
       type: 'rich_text'
@@ -195,6 +244,7 @@ export interface NotionModel {
       type: 'date'
       date: {
         start: string
+        end: string
       }
     }
     Height: {
@@ -202,6 +252,14 @@ export interface NotionModel {
       number: number
     }
     Weight: {
+      type: 'number'
+      number: number
+    }
+    Shoulder: {
+      type: 'number'
+      number: number
+    }
+    Waist: {
       type: 'number'
       number: number
     }
@@ -239,8 +297,13 @@ export interface NotionModel {
     }
     Project: {
       type: 'relation'
-      relation: string[]
-      has_more: false
+      relation: { id: string }[]
+      has_more: boolean
+    }
+    Asset: {
+      type: 'relation'
+      relation: { id: string }[]
+      has_more: boolean
     }
   }
 }
@@ -287,16 +350,6 @@ export interface NotionAsset {
         name: 'Plan' | 'Draft' | 'Release' | 'Archive'
       }
     }
-    Project: {
-      type: 'relation'
-      relation: string[]
-      has_more: false
-    }
-    Model: {
-      type: 'relation'
-      relation: string[]
-      has_more: false
-    }
     Featured: {
       type: 'checkbox'
       checkbox: boolean
@@ -310,6 +363,16 @@ export interface NotionAsset {
       select: {
         name: AspectRatio
       }
+    }
+    Project: {
+      type: 'relation'
+      relation: { id: string }[]
+      has_more: boolean
+    }
+    Model: {
+      type: 'relation'
+      relation: { id: string }[]
+      has_more: boolean
     }
   }
 }

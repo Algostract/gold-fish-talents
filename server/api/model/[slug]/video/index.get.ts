@@ -168,6 +168,7 @@ export default defineCachedEventHandler<Promise<Video[]>>(
               sources: convertSources(slug, slug.includes('featured-video') ? heroPreset : aspectRatio < 1 ? portraitPreset : landscapePreset),
               type: slug.includes('featured-video') ? 'hero' : 'feature',
               featured: properties.Featured.checkbox,
+              projectId: properties.Project.relation[0].id,
               url: `/video/${slug}`,
             }
           })

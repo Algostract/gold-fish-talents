@@ -56,7 +56,6 @@ export default defineCachedEventHandler<Promise<Photo[]>>(
           })
           .map(async ({ cover, properties }): Promise<Photo> => {
             const slug: string = properties.Slug.formula.string
-
             const [aW, aH] = properties['Aspect ratio'].select.name.split(':').map((item) => parseInt(item))
 
             return {
@@ -66,6 +65,7 @@ export default defineCachedEventHandler<Promise<Photo[]>>(
               image: cover?.type === 'external' ? cover.external.url.split('/')[3] : undefined,
               aspectRatio: aW / aH,
               featured: properties.Featured.checkbox,
+              projectId: properties.Project.relation[0].id,
               url: `/photo/${slug}`,
             }
           })
