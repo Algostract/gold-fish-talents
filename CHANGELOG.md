@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.9
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.8...v0.2.9)
+
+### 🚀 Enhancements
+
+- Enhance model dashboard with project associations ([b173abc](https://github.com/Algostract/gold-fish-bowl/commit/b173abc))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.8
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.7...v0.2.8)
