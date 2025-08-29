@@ -56,26 +56,7 @@ docker node ls
 4. Create a docker volume
 
 ```bash
-docker volume create \
-  --name gold-fish-bowl_static \
-  --driver local \
-  --opt type=none \
-  --opt device=~/Algostract/gold-fish-bowl/static \
-  --opt o=bind
-
-docker volume create \
-  --name gold-fish-bowl_data \
-  --driver local \
-  --opt type=none \
-  --opt device=~/Algostract/gold-fish-bowl/.data \
-  --opt o=bind
-
-docker volume create \
-  --name gold-fish-bowl_search-data \
-  --driver local \
-  --opt type=none \
-  --opt device=~/Algostract/gold-fish-bowl/.data \
-  --opt o=bind
+upload static, .data, .env.prod into /root/gold-fish-bowl
 ```
 
 5. Use Docker Stack to deploy multi-container application

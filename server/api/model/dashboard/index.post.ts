@@ -21,8 +21,6 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    console.log({ data })
-
     if (query.results.length > 0) {
       await notion.pages.update({
         page_id: query.results[0].id,

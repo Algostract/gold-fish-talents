@@ -3,7 +3,7 @@ services:
   app:
     image: ghcr.io/algostract/gold-fish-bowl:latest
     env_file:
-      - .env.prod
+      - /root/gold-fish-bowl/.env.prod
     volumes:
       - gold-fish-bowl_static:/app/static
       - gold-fish-bowl_data:/app/.data
@@ -34,11 +34,23 @@ services:
 
 volumes:
   gold-fish-bowl_static:
-    external: true
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /root/gold-fish-bowl/static
   gold-fish-bowl_data:
-    external: true
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /root/gold-fish-bowl/.data
   gold-fish-bowl_search-data:
-    external: true
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /root/gold-fish-bowl/.data
 
 networks:
   front-tier:
