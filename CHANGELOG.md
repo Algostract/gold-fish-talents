@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.2.10
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.9...v0.2.10)
+
+### 🩹 Fixes
+
+- Update env_file paths to use local .env for app and typesense services ([6f4f247](https://github.com/Algostract/gold-fish-bowl/commit/6f4f247))
+
+### 💅 Refactors
+
+- Update README and docker-compose for improved deployment instructions ([fc6c08c](https://github.com/Algostract/gold-fish-bowl/commit/fc6c08c))
+- Comment out deploy-web job and update README for deployment instructions ([117a385](https://github.com/Algostract/gold-fish-bowl/commit/117a385))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.9
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.8...v0.2.9)
