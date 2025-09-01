@@ -41,7 +41,7 @@ const { data: featuredModels } = await useFetch('/api/model', {
 })
 
 const currentIndex = ref(0)
-const activeModel = computed(() => featuredModels.value[currentIndex.value])
+// const activeModel = computed(() => featuredModels.value[currentIndex.value])
 
 watchEffect((onCleanup) => {
   const interval = setInterval(() => {
@@ -50,16 +50,33 @@ watchEffect((onCleanup) => {
   onCleanup(() => clearInterval(interval))
 })
 
-const { width } = useWindowSize()
+// const { width } = useWindowSize()
 
-const imageModifiers = computed(() => {
+/* const imageModifiers = computed(() => {
   return width.value >= 768
     ? { fit: 'contain' } // for md and up
     : { fit: 'cover' } // for small screens
-})
+}) */
 
 // const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0dce40c7632ab'
 // const projectForm = "https://gold-fish-bowl.notion.site/24ee6caf5d4a80a792f0dbe77f18d134"
+
+const featuredVideo = {
+  name: 'hero',
+  type: 'feature',
+  poster: '',
+  sources: ['720p', '1080p', '1440p'].flatMap((resolution) => {
+    return ['avc', 'vp9', 'hevc', 'av1'].flatMap((codec) => {
+      return {
+        src: `/media/video/hero-${codec}-${resolution}-portrait.${codec === 'av1' || codec === 'vp9' ? 'webm' : 'mp4'}`,
+        type: `video/${codec === 'av1' || codec === 'vp9' ? 'webm' : 'mp4'}`,
+        media: '',
+        codec: codec,
+        resolution: resolution,
+      }
+    })
+  }),
+}
 </script>
 
 <template>
@@ -85,25 +102,50 @@ const imageModifiers = computed(() => {
           <NuxtLink to="/model" class="text-md w-full rounded-full bg-primary-500 px-4 py-3 text-center text-dark-500"> Get started</NuxtLink>
         </div>
       </div>
-      <Transition
-        v-if="activeModel"
-        enter-active-class="transition-transform duration-500 ease-out "
-        enter-from-class="translate-x-full"
-        enter-to-class="translate-x-0"
-        leave-from-class="translate-x-0"
-        leave-to-class="-translate-x-[10%] opacity-80"
-        leave-active-class="absolute duration-1000 -z-10"
-        mode="default">
-        <NuxtImg
-          :key="activeModel.id"
-          :src="`${activeModel.photo.image}/-/scale_crop/360x720/50p,0p/`"
-          :alt="`${activeModel.name} hero image`"
-          :height="Math.round(720 / (1 / 2))"
-          :modifiers="imageModifiers"
+      <!-- <Transition v-if="activeModel" enter-active-class="transition-transform duration-500 ease-out "
+        enter-from-class="translate-x-full" enter-to-class="translate-x-0" leave-from-class="translate-x-0"
+        leave-to-class="-translate-x-[10%] opacity-80" leave-active-class="absolute duration-1000 -z-10" mode="default">
+        <NuxtImg :key="activeModel.id" :src="`${activeModel.photo.image}/-/scale_crop/360x720/50p,0p/`"
+          :alt="`${activeModel.name} hero image`" :height="Math.round(720 / (1 / 2))" :modifiers="imageModifiers"
           :placeholder="[360, Math.round(360 / (1 / 2)), 'lightest', 25]"
           class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />
-      </Transition>
+      </Transition> -->
+      <NuxtVideo
+        v-if="featuredVideo"
+        class="absolute left-1/2 top-0 col-span-full col-start-1 row-span-full row-start-1 h-screen w-screen -translate-x-1/2 object-cover"
+        :source="featuredVideo.sources"
+        :poster="featuredVideo.poster"
+        :disable-picture-in-picture="true"
+        controls-list="nodownload"
+        :autoplay="true"
+        :muted="true"
+        :playsinline="true"
+        :loop="true"
+        preload="metadata" />
     </section>
+    <!-- <section id="hero" class="grid h-screen grid-cols-3 grid-rows-[repeat(3,min-content)] items-center gap-y-[4.5rem] overflow-hidden pt-24 text-white md:px-16 md:pt-32 lg:grid-rows-1 lg:pt-0">
+    <NuxtVideo
+      v-if="featuredVideo"
+      class="absolute left-1/2 top-0 col-span-full col-start-1 row-span-full row-start-1 h-screen w-screen -translate-x-1/2 object-cover"
+      :source="featuredVideo.sources"
+      :poster="featuredVideo.poster"
+      :disable-picture-in-picture="true"
+      controls-list="nodownload"
+      :autoplay="true"
+      :muted="true"
+      :playsinline="true"
+      :loop="true"
+      preload="metadata" />
+    <div class="relative col-span-3 !col-start-1 row-start-1 flex flex-col gap-6 text-center md:row-start-2 lg:col-span-2 lg:text-left">
+      <h1 class="-mb-1 text-3xl font-semi-bold md:text-5xl">Elevate Your <br /><span class="rounded bg-primary-500 px-2 py-2">Brand</span> Image</h1>
+      <p class="mx-auto max-w-screen-sm text-lg leading-9 tracking-wide md:text-xl lg:mx-0">Nurture the essence of your product with our photography & videography services</p>
+      <ButtonCTA class="hidden self-start lg:flex" @click="emit('contact')" />
+    </div>
+    <div class="relative bottom-[5rem] col-span-full col-start-1 row-start-4 flex flex-col items-center gap-4 self-end md:bottom-16">
+      <ButtonCTA class="items-center justify-self-center lg:hidden" @click="emit('contact')" />
+      <BrandSlider />
+    </div>
+  </section> -->
   </div>
 </template>
 

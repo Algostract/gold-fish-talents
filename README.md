@@ -56,7 +56,7 @@ docker node ls
 4. Create a docker volume
 
 ```bash
-upload static, .data, .env.prod into /root/gold-fish-bowl
+upload static, .data into /root/gold-fish-bowl
 ```
 
 5. Use Docker Stack to deploy multi-container application
