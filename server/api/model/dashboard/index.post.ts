@@ -13,17 +13,19 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const notionDbId = config.private.notionDbId as unknown as NotionDB
 
-    const query = await notion.databases.query({
-      database_id: notionDbId.model,
-      filter: {
-        property: 'Email',
-        email: { equals: user.email },
-      },
-    })
+    const model = (
+      await notion.databases.query({
+        database_id: notionDbId.model,
+        filter: {
+          property: 'Email',
+          email: { equals: user.email },
+        },
+      })
+    ).results[0] as unknown as NotionModel
 
-    if (query.results.length > 0) {
+    if (model) {
       await notion.pages.update({
-        page_id: query.results[0].id,
+        page_id: model.id,
         properties: {
           Name: {
             type: 'title',
@@ -31,7 +33,7 @@ export default defineEventHandler(async (event) => {
           },
           Status: {
             type: 'status',
-            status: { name: 'Filled' },
+            status: { name: model.properties.Status.status.name === 'Unfilled' ? 'Filled' : model.properties.Status.status.name },
           },
           Description: {
             type: 'rich_text',

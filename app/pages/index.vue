@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const title = `Gold Fish Bowl`
-const description = `Locality‑focused, talent marketplace marketplace where models, makeup artist, designer etc can be found for commercial shoot`
+const description = `Locality‑focused, talent marketplace marketplace where talents, makeup artist, designer etc can be found for commercial shoot`
 
 const {
   public: { siteUrl },
@@ -29,7 +29,7 @@ useSchemaOrg([
   }),
 ])
 
-const { data: featuredModels } = await useFetch('/api/model', {
+const { data: featuredTalents } = await useFetch('/api/model', {
   query: {
     query: '',
     queryBy: 'name',
@@ -41,11 +41,11 @@ const { data: featuredModels } = await useFetch('/api/model', {
 })
 
 const currentIndex = ref(0)
-// const activeModel = computed(() => featuredModels.value[currentIndex.value])
+// const activeModel = computed(() => featuredTalents.value[currentIndex.value])
 
 watchEffect((onCleanup) => {
   const interval = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % (featuredModels.value?.length || 1)
+    currentIndex.value = (currentIndex.value + 1) % (featuredTalents.value?.length || 1)
   }, 4000)
   onCleanup(() => clearInterval(interval))
 })
@@ -58,15 +58,12 @@ watchEffect((onCleanup) => {
     : { fit: 'cover' } // for small screens
 }) */
 
-// const talentModelForm = 'https://gold-fish-bowl.notion.site/248e6caf5d4a81e984e0dce40c7632ab'
-// const projectForm = "https://gold-fish-bowl.notion.site/24ee6caf5d4a80a792f0dbe77f18d134"
-
 const featuredVideo = {
   name: 'hero',
   type: 'feature',
-  poster: '',
-  sources: ['720p', '1080p', '1440p'].flatMap((resolution) => {
-    return ['avc', 'vp9', 'hevc', 'av1'].flatMap((codec) => {
+  poster: 'https://ucarecdn.com/de3af005-6e67-48cf-b77f-86a042589120/-/preview/1920x1080/',
+  sources: (['1440p', '1080p', '720p'] as const).flatMap((resolution) => {
+    return (['av1', 'hevc', 'vp9', 'avc'] as const).flatMap((codec) => {
       return {
         src: `/media/video/hero-${codec}-${resolution}-portrait.${codec === 'av1' || codec === 'vp9' ? 'webm' : 'mp4'}`,
         type: `video/${codec === 'av1' || codec === 'vp9' ? 'webm' : 'mp4'}`,
@@ -86,15 +83,15 @@ const featuredVideo = {
       <div class="absolute bottom-0 left-0 z-10 flex w-full flex-col gap-5 px-4 py-8 text-white">
         <div>
           <p class="font-sub text-xl font-semi-bold uppercase [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">
-            World's Best
+            Talent meets
             <br />
-            <strong class="text-3xl font-regular">models</strong>
+            <strong class="text-3xl font-regular">Opportunity</strong>
           </p>
-          <p class="text-base [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">Connect with nearby <br />models with ease</p>
+          <p class="text-base [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">Connect with nearby <br />talents with ease</p>
         </div>
         <div class="scrollbar-hidden relative w-full overflow-x-scroll">
           <div class="flex w-fit gap-6">
-            <MarkerModel v-for="{ id, photo, name, url } in featuredModels" :id="id" :key="id" :photo="photo" :name="name" :url="url" />
+            <MarkerModel v-for="{ id, photo, name, url } in featuredTalents" :id="id" :key="id" :photo="photo" :name="name" :url="url" />
           </div>
         </div>
         <div class="flex gap-2">
