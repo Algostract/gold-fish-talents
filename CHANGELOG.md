@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.11
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.10...v0.2.11)
+
+### 💅 Refactors
+
+- Update from 'models' to 'talents' and adjust related logic in index.vue and index.post.ts ([5809f23](https://github.com/Algostract/gold-fish-bowl/commit/5809f23))
+
+### ❤️ Contributors
+
+- Shba007 ([@shba007](https://github.com/shba007))
+
 ## v0.2.10
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.9...v0.2.10)
