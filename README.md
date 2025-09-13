@@ -12,7 +12,7 @@
 
 ![Landing](public/previews/landing.webp)
 
-> Locality‑focused, talent marketplace marketplace where models, makeup artist, designer etc can be found for commercial shoot
+> Locality‑focused, talent marketplace where models, voice actors, makeup artist, designer etc can be found for commercial shoot
 
 - 📦 SSR
 - 🖼️ OG Tags

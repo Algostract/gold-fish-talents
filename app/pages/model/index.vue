@@ -3,24 +3,31 @@ definePageMeta({
   layout: false,
 })
 
-const pageParams = ref({
-  perPage: 8,
-  page: 1,
+const filterBy = ref({
+  fee: { limit: { min: 0, max: 5000 }, value: { min: 0, max: 5000 } },
 })
 
 const searchParams = ref<SearchParams>({
   query: '',
   queryBy: 'name',
-  filterBy: '',
-  sortBy: 'name:asc',
+})
+
+const pageParams = ref<PageParams>({
   perPage: 8,
   page: 1,
 })
 
 const allParams = computed(() => ({
   ...searchParams.value,
+  filterBy: `fee:[${filterBy.value.fee.value.min}..${filterBy.value.fee.value.max}]`,
+  sortBy: 'name:asc',
   ...pageParams.value,
 }))
+
+function onFeeUpdate(min: number, max: number) {
+  filterBy.value.fee.value.min = min
+  filterBy.value.fee.value.max = max
+}
 
 const { data: models, status } = useFetch('/api/model', { query: allParams })
 const allModels = ref<Model[]>(models.value ?? [])
@@ -35,7 +42,7 @@ watch(status, (value) => {
 })
 
 watch(
-  () => [searchParams.value.query, searchParams.value.queryBy, searchParams.value.filterBy, searchParams.value.sortBy],
+  () => [searchParams.value.query, searchParams.value.queryBy, filterBy.value.fee.value.min, filterBy.value.fee.value.max],
   () => {
     allModels.value = []
     hasMore.value = true
@@ -67,6 +74,8 @@ const mapStyle = computed(() => `/api/map?theme=${colorMode.value === 'dark' ? '
 // TODO: Get user location when viewMode is changed to map
 const center: [number, number] = [88.4306945, 22.409649]
 const zoom = 16
+
+const isDrawerOpen = ref(false)
 </script>
 
 <template>
@@ -74,7 +83,7 @@ const zoom = 16
     <section class="hidden md:col-start-1 md:row-span-full md:block">NavBar</section>
     <div class="z-10 col-span-full col-start-1 row-start-1 m-4 flex justify-between gap-4 md:col-start-2 md:m-8">
       <SearchBar v-model="searchParams" placeholder="Search" class="w-full" />
-      <button class="size-fit rounded-lg bg-dark-500 fill-white p-1 text-[36px] text-white">
+      <button class="size-fit rounded-lg bg-dark-500 fill-white p-1 text-[36px] text-white" @click="isDrawerOpen = !isDrawerOpen">
         <NuxtIcon name="local:slider" />
       </button>
       <DevOnly>
@@ -119,5 +128,41 @@ const zoom = 16
       </ClientOnly>
     </section>
     <FloatNavBar />
+    <AppDrawer :is-open="isDrawerOpen" @close="isDrawerOpen = false">
+      <ClientOnly>
+        <div class="flex flex-col gap-4">
+          <section class="grid w-full grid-flow-col grid-cols-[auto_min-content] grid-rows-[min-content_auto] gap-y-3">
+            <span>Sort By</span>
+            <div class="flex flex-wrap gap-3">
+              <!--   <BaseLabel icon="cart" title="Arrival" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.type == 'arrival' }" @click="sortBy.type = 'arrival'" />
+              <BaseLabel icon="trending-up" title="Popularity" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.type == 'popularity' }"
+                @click="sortBy.type = 'popularity'" />
+              <BaseLabel icon="star" title="Rating" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.type == 'rating' }" @click="sortBy.type = 'rating'" />
+              <BaseLabel icon="money" title="Price" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.type == 'price' }" @click="sortBy.type = 'price'" /> -->
+            </div>
+            <span>Order</span>
+            <div class="flex flex-wrap gap-3">
+              <!--  <BaseLabel icon="increasing" title="increasing" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.order == 'increasing' }"
+                @click="sortBy.order = 'increasing'" />
+              <BaseLabel icon="decreasing" title="decreasing" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.order == 'decreasing' }"
+                @click="sortBy.order = 'decreasing'" /> -->
+            </div>
+          </section>
+          <section class="">
+            <div class="grid grid-cols-2 grid-rows-2 gap-y-2">
+              <span>Price</span>
+              <span class="justify-self-end">₹{{ filterBy.fee.value.min }} - ₹{{ filterBy.fee.value.max }}</span>
+              <AppSlider :limit="filterBy.fee.limit" :value="filterBy.fee.value" :step="500" class="col-span-2" @update="onFeeUpdate" />
+            </div>
+          </section>
+        </div>
+      </ClientOnly>
+    </AppDrawer>
   </main>
 </template>

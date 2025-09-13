@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const title = `Gold Fish Bowl`
-const description = `Locality‑focused, talent marketplace marketplace where talents, makeup artist, designer etc can be found for commercial shoot`
+const description = `Locality‑focused, talent marketplace where models, voice actors, makeup artist, designer etc can be found for commercial shoot`
 
 const {
   public: { siteUrl },
@@ -40,24 +40,6 @@ const { data: featuredTalents } = await useFetch('/api/model', {
   default: () => [],
 })
 
-const currentIndex = ref(0)
-// const activeModel = computed(() => featuredTalents.value[currentIndex.value])
-
-watchEffect((onCleanup) => {
-  const interval = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % (featuredTalents.value?.length || 1)
-  }, 4000)
-  onCleanup(() => clearInterval(interval))
-})
-
-// const { width } = useWindowSize()
-
-/* const imageModifiers = computed(() => {
-  return width.value >= 768
-    ? { fit: 'contain' } // for md and up
-    : { fit: 'cover' } // for small screens
-}) */
-
 const featuredVideo = {
   name: 'hero',
   type: 'feature',
@@ -79,13 +61,13 @@ const featuredVideo = {
 <template>
   <div class="relative">
     <!-- Hero section -->
-    <section class="overlay relative -left-2 isolate h-dvh w-dvw md:-left-4">
-      <div class="absolute bottom-0 left-0 z-10 flex w-full flex-col gap-5 px-4 py-8 text-white">
+    <section class="overlay relative -left-2 isolate min-h-dvh w-dvw md:-left-4">
+      <div class="absolute bottom-0 left-0 z-10 flex w-full flex-col gap-3 px-4 py-8 text-white">
         <div>
-          <p class="font-sub text-xl font-semi-bold uppercase [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">
-            Talent meets
+          <p class="font-sub text-lg font-semi-bold uppercase [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">
+            Where Talent meets
             <br />
-            <strong class="text-3xl font-regular">Opportunity</strong>
+            <strong class="my-2 inline-block text-2xl font-regular">Opportunity</strong>
           </p>
           <p class="text-base [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">Connect with nearby <br />talents with ease</p>
         </div>
@@ -99,14 +81,6 @@ const featuredVideo = {
           <NuxtLink to="/model" class="text-md w-full rounded-full bg-primary-500 px-4 py-3 text-center text-dark-500"> Get started</NuxtLink>
         </div>
       </div>
-      <!-- <Transition v-if="activeModel" enter-active-class="transition-transform duration-500 ease-out "
-        enter-from-class="translate-x-full" enter-to-class="translate-x-0" leave-from-class="translate-x-0"
-        leave-to-class="-translate-x-[10%] opacity-80" leave-active-class="absolute duration-1000 -z-10" mode="default">
-        <NuxtImg :key="activeModel.id" :src="`${activeModel.photo.image}/-/scale_crop/360x720/50p,0p/`"
-          :alt="`${activeModel.name} hero image`" :height="Math.round(720 / (1 / 2))" :modifiers="imageModifiers"
-          :placeholder="[360, Math.round(360 / (1 / 2)), 'lightest', 25]"
-          class="absolute inset-0 -z-10 h-full w-full object-cover object-top md:object-contain" />
-      </Transition> -->
       <NuxtVideo
         v-if="featuredVideo"
         class="absolute left-1/2 top-0 col-span-full col-start-1 row-span-full row-start-1 h-screen w-screen -translate-x-1/2 object-cover"
@@ -120,29 +94,37 @@ const featuredVideo = {
         :loop="true"
         preload="metadata" />
     </section>
-    <!-- <section id="hero" class="grid h-screen grid-cols-3 grid-rows-[repeat(3,min-content)] items-center gap-y-[4.5rem] overflow-hidden pt-24 text-white md:px-16 md:pt-32 lg:grid-rows-1 lg:pt-0">
-    <NuxtVideo
-      v-if="featuredVideo"
-      class="absolute left-1/2 top-0 col-span-full col-start-1 row-span-full row-start-1 h-screen w-screen -translate-x-1/2 object-cover"
-      :source="featuredVideo.sources"
-      :poster="featuredVideo.poster"
-      :disable-picture-in-picture="true"
-      controls-list="nodownload"
-      :autoplay="true"
-      :muted="true"
-      :playsinline="true"
-      :loop="true"
-      preload="metadata" />
-    <div class="relative col-span-3 !col-start-1 row-start-1 flex flex-col gap-6 text-center md:row-start-2 lg:col-span-2 lg:text-left">
-      <h1 class="-mb-1 text-3xl font-semi-bold md:text-5xl">Elevate Your <br /><span class="rounded bg-primary-500 px-2 py-2">Brand</span> Image</h1>
-      <p class="mx-auto max-w-screen-sm text-lg leading-9 tracking-wide md:text-xl lg:mx-0">Nurture the essence of your product with our photography & videography services</p>
-      <ButtonCTA class="hidden self-start lg:flex" @click="emit('contact')" />
-    </div>
-    <div class="relative bottom-[5rem] col-span-full col-start-1 row-start-4 flex flex-col items-center gap-4 self-end md:bottom-16">
-      <ButtonCTA class="items-center justify-self-center lg:hidden" @click="emit('contact')" />
-      <BrandSlider />
-    </div>
-  </section> -->
+    <footer class="round relative flex w-full flex-col items-center gap-4 px-4 py-6 text-white">
+      <ul class="grid grid-flow-col grid-cols-4 grid-rows-3 gap-y-2 whitespace-nowrap">
+        <li class="col-start-1">
+          <NuxtLink to="/terms">Terms</NuxtLink>
+        </li>
+        <li class="col-start-1">
+          <NuxtLink to="/privacy">Privacy</NuxtLink>
+        </li>
+        <li class="col-start-2">
+          <NuxtLink to="/contact">Contact us</NuxtLink>
+        </li>
+        <!-- Social Media -->
+        <li class="col-span-2 col-start-3 row-start-3 flex justify-end gap-3 fill-white">
+          <NuxtLink to="https://www.facebook.com/goldfishbowltalent" target="_blank">
+            <NuxtIcon name="local:facebook" class="text-[28px]" />
+          </NuxtLink>
+          <NuxtLink to="https://www.instagram.com/goldfishbowltalent" target="_blank">
+            <NuxtIcon name="local:instagram" class="text-[28px]" />
+          </NuxtLink>
+          <NuxtLink to="https://x.com/goldfishbowltalent" target="_blank">
+            <NuxtIcon name="local:x" class="text-[28px]" />
+          </NuxtLink>
+        </li>
+      </ul>
+      <div class="w-full border-t border-dark-600" />
+      <NuxtLink to="https://shirsendu-bairagi.dev" target="__blank" class="flex items-center gap-1">
+        <span>Made by</span>
+        <NuxtIcon name="local:shba007" filled class="text-[20px]" />
+      </NuxtLink>
+      <span class="text-xs">&copy; Gold Fish Bowl 2025. All rights reserved.</span>
+    </footer>
   </div>
 </template>
 

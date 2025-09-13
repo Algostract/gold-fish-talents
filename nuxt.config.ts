@@ -26,6 +26,9 @@ const nativeConfig =
           },
         },
         nitro: {
+          rollupConfig: {
+            plugins: [vue()],
+          },
           prerender: {
             routes: [],
           },
@@ -36,9 +39,6 @@ const nativeConfig =
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-  future: {
-    compatibilityVersion: 4,
-  },
   experimental: {
     viewTransition: true,
   },
@@ -64,14 +64,14 @@ export default defineNuxtConfig({
   ],
   nitro: {
     compressPublicAssets: true,
-    rollupConfig: {
-      plugins: [vue()],
-    },
     storage: {
       fs: {
         driver: 'fs',
         base: './static',
       },
+    },
+    rollupConfig: {
+      plugins: [vue()],
     },
     experimental: {
       tasks: true,
@@ -80,6 +80,18 @@ export default defineNuxtConfig({
       '*/5 * * * *': ['search:sync'],
     },
   },
+  /*   vite: {
+    // FIXME: temporary fix for email remove when not needed
+    $server: {
+      build: {
+        rollupOptions: {
+          output: {
+            preserveModules: true,
+          },
+        },
+      },
+    },
+  }, */
   routeRules: {
     '/': { ssr: true },
     '/_ipx/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
@@ -103,8 +115,9 @@ export default defineNuxtConfig({
     },
     private: {
       notionDbId: '',
-      emailMetaData: '',
       vapidKey: '',
+      vapidSubject: '',
+      emailMetaData: '',
       mapApiKey: '',
       paymentUpiInfo: '',
     },

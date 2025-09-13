@@ -97,15 +97,16 @@ export interface Project {
 export interface SearchParams {
   query: string
   queryBy: string
-  filterBy: string
-  sortBy: string
+}
+
+export interface PageParams {
   perPage: number
   page: number
 }
 
-export interface PaginatedSearchParams extends SearchParams {
-  perPage: number
-  page: number
+export interface PaginatedSearchParams extends SearchParams, PageParams {
+  filterBy: string
+  sortBy: string
 }
 
 type Orientation = 'portrait' | 'landscape'

@@ -2,7 +2,7 @@ import type { TypesenseModel } from '../search/sync.post'
 
 export default defineEventHandler<Promise<Model[]>>(async (event) => {
   try {
-    const searchParams = getQuery<SearchParams>(event)
+    const searchParams = getQuery<PaginatedSearchParams>(event)
 
     const response = await typesense
       .collections<TypesenseModel>('model')
@@ -10,7 +10,7 @@ export default defineEventHandler<Promise<Model[]>>(async (event) => {
       .search({
         q: searchParams.query,
         query_by: searchParams.queryBy,
-        filter_by: 'status:=Active,' + searchParams.filterBy, // e.g. "isFeatured:=true"
+        filter_by: 'status:=Active&&' + searchParams.filterBy, // e.g. "isFeatured:=true"
         sort_by: searchParams.sortBy,
         per_page: searchParams.perPage,
         page: searchParams.page,
