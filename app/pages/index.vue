@@ -37,7 +37,12 @@ const { data: featuredTalents } = await useFetch('/api/v1/talents/models', {
     sortBy: 'name:asc',
     perPage: 8,
   },
-  default: () => [],
+  default: () => ({
+    models: [],
+    count: 0,
+    page: 1,
+    perPage: 8,
+  }),
 })
 
 const featuredVideo = {
@@ -73,7 +78,7 @@ const featuredVideo = {
         </div>
         <div class="scrollbar-hidden relative w-full overflow-x-scroll">
           <div class="flex w-fit gap-6">
-            <MarkerModel v-for="{ id, photo, name, url } in featuredTalents" :id="id" :key="id" :photo="photo" :name="name" :url="url" />
+            <MarkerModel v-for="{ id, photo, name, url } in featuredTalents.models" :id="id" :key="id" :photo="photo" :name="name" :url="url" />
           </div>
         </div>
         <div class="flex gap-2">

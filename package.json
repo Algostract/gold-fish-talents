@@ -58,6 +58,7 @@
     "@vite-pwa/nuxt": "^1.0.4",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
+    "@vueuse/components": "^13.9.0",
     "@vueuse/core": "^13.9.0",
     "@vueuse/nuxt": "^13.9.0",
     "date-fns": "^4.1.0",

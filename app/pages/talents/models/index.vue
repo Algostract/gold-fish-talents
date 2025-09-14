@@ -1,12 +1,9 @@
 <script setup lang="ts">
+import { vInfiniteScroll } from '@vueuse/components'
+
 definePageMeta({
   layout: false,
 })
-
-function onFeeUpdate(min: number, max: number) {
-  filterBy.value.fee.value.min = min
-  filterBy.value.fee.value.max = max
-}
 
 const filterBy = ref({
   fee: { limit: { min: 0, max: 5000 }, value: { min: 0, max: 5000 } },
@@ -18,13 +15,10 @@ const searchParams = ref<SearchParams>({
 })
 
 const pageParams = ref<PageParams>({
-  perPage: 8,
   page: 1,
+  perPage: 8,
 })
 
-/**
- * 🔹 Computed query params
- */
 const queryParams = computed(() => ({
   ...searchParams.value,
   filterBy: `fee:[${filterBy.value.fee.value.min}..${filterBy.value.fee.value.max}]`,
@@ -32,66 +26,54 @@ const queryParams = computed(() => ({
   ...pageParams.value,
 }))
 
-const debouncedQueryParams = debouncedRef(queryParams, 300)
-
-/**
- * 🔹 Fetch API
- */
-const { data: models, status } = useFetch<Model[]>('/api/v1/talents/models', {
-  query: debouncedQueryParams,
-  default: () => [],
+const {
+  data: result,
+  status,
+  refresh,
+} = useFetch('/api/v1/talents/models', {
+  query: queryParams,
+  default: () => ({
+    models: [],
+    count: 0,
+    page: 1,
+    perPage: 8,
+  }),
+  watch: false,
 })
 
-/**
- * 🔹 State
- */
-const allModels = ref<Model[]>(models.value)
-const hasMore = ref(true)
+const totalResult = reactive<{ models: Model[]; count: number; page: number; perPage: number }>({
+  models: structuredClone(result.value.models),
+  count: result.value.count,
+  page: result.value.page,
+  perPage: result.value.perPage,
+})
 
-const isLoading = computed(() => status.value === 'pending' && !allModels.value.length)
-
-/**
- * 🔹 Append new data whenever models update
- */
 watch(status, (value) => {
-  if (!value) return
-  console.log({ status: status.value, models: models.value, pageParams: pageParams.value })
-  if (pageParams.value.page === 1) {
-    // fresh search → reset
-    allModels.value = [...models.value]
-  } else if (status.value === 'success') {
-    // append
-    allModels.value.push(...models.value)
-  }
+  if (!(totalResult.count === 0 && value === 'success')) return
 
-  hasMore.value = value.length > 0
+  totalResult.models = structuredClone(result.value.models)
+  totalResult.count = result.value.count
+  totalResult.page = result.value.page
+  totalResult.perPage = result.value.perPage
 })
 
-/**
- * 🔹 Reset when filters/search change
- */
-watch(
-  () => [searchParams.value.query, searchParams.value.queryBy, filterBy.value.fee.value.min, filterBy.value.fee.value.max],
-  () => {
-    hasMore.value = true
-    pageParams.value.page = 1
-  }
-)
+async function loadModels() {
+  const totalPages = Math.ceil(totalResult.count / totalResult.perPage)
 
-/**
- * 🔹 Infinite scroll
- */
-const listContainer = useTemplateRef('list-container')
+  if (!(status.value !== 'pending' && totalResult.page < totalPages)) return
+  pageParams.value.page++
+  await refresh()
 
-useInfiniteScroll(
-  listContainer,
-  () => {
-    if (hasMore.value && status.value === 'success') {
-      pageParams.value.page++
-    }
-  },
-  { distance: 10 }
-)
+  totalResult.models.push(...result.value.models)
+  totalResult.count = result.value.count
+  totalResult.page = result.value.page
+  totalResult.perPage = result.value.perPage
+}
+
+function onFeeUpdate(min: number, max: number) {
+  filterBy.value.fee.value.min = min
+  filterBy.value.fee.value.max = max
+}
 
 const { state: viewMode, next: changeViewMode } = useCycleList(['list', 'map'])
 
@@ -119,27 +101,31 @@ const isDrawerOpen = ref(false)
     </div>
     <section
       v-show="viewMode === 'list'"
-      ref="list-container"
+      v-infinite-scroll="[loadModels, { distance: 10 }]"
       class="target scrollbar-hidden relative col-span-full col-start-1 block h-full items-center justify-items-center overflow-y-auto p-2 md:col-start-2">
-      <div v-if="isLoading">Loading Model</div>
-      <!--  -->
-      <div v-else class="mx-auto mb-20 grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:gap-8">
-        <CardModel
-          v-for="{ id, name, gender, age, fee, photo, rating, reviewCount, coordinate, isFeatured, url } in allModels"
-          :id="id"
-          :key="id"
-          :name="name"
-          :gender="gender"
-          :age="age"
-          :fee="fee"
-          :photo="photo"
-          :rating="rating"
-          :review-count="reviewCount"
-          :coordinate="coordinate"
-          :is-featured="isFeatured"
-          :is-favorite="false"
-          :url="url" />
+      <div v-if="!totalResult.count && status === 'pending'">Loading Model</div>
+      <div v-else-if="!totalResult.count && status === 'error'">Error loading Model</div>
+      <div v-else class="mx-auto mb-20 w-full">
+        <p class="font-body">{{ totalResult.count }} models found</p>
+        <div class="grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:gap-8">
+          <CardModel
+            v-for="{ id, name, gender, age, fee, photo, rating, reviewCount, coordinate, isFeatured, url } in totalResult.models"
+            :id="id"
+            :key="id"
+            :name="name"
+            :gender="gender"
+            :age="age"
+            :fee="fee"
+            :photo="photo"
+            :rating="rating"
+            :review-count="reviewCount"
+            :coordinate="coordinate"
+            :is-featured="isFeatured"
+            :is-favorite="false"
+            :url="url" />
+        </div>
       </div>
+      <div v-if="totalResult.count && status === 'pending'">Loading more models</div>
     </section>
     <section v-show="viewMode !== 'list'" class="col-span-full col-start-1 row-span-full row-start-2 h-full p-2 md:col-start-2">
       <ClientOnly>
@@ -148,7 +134,7 @@ const isDrawerOpen = ref(false)
           <!-- <MglFullscreenControl /> -->
           <!-- <MglScaleControl /> -->
           <MglGeolocateControl />
-          <MglMarker v-for="{ id, photo, name, coordinate, url } in models" :key="id" :coordinates="coordinate">
+          <MglMarker v-for="{ id, photo, name, coordinate, url } in totalResult.models" :key="id" :coordinates="coordinate">
             <template #marker>
               <MarkerModel :id="id" :photo="photo" :name="name" :url="url" />
             </template>

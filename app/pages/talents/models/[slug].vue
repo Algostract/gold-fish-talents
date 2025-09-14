@@ -29,7 +29,7 @@ useSeoMeta({
   twitterDescription: description,
   ogImage: imageUrl,
   twitterImage: imageUrl,
-  ogUrl: `${siteUrl}/model/${slug}`,
+  ogUrl: `${siteUrl}/talents/models/${slug}`,
 })
 
 useSchemaOrg([
@@ -66,7 +66,7 @@ onMounted(() => {
 const shareAsset = ref<ShareAsset>({
   name: title,
   imageUrl: `https://ucarecdn.com/${model.value?.photo.image}/-/format/jpeg/-/scale_crop/720x960/50p,0p/`,
-  url: `${siteUrl}/model/${slug}`,
+  url: `${siteUrl}/talents/models/${slug}`,
 })
 </script>
 
