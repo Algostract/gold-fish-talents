@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.3.0
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.11...v0.3.0)
+
+### 🚀 Enhancements
+
+- **api:** ⚠️ New upload api added, talent based role added, api v1 segmented ([8ce396f](https://github.com/Algostract/gold-fish-bowl/commit/8ce396f))
+
+### 🏡 Chore
+
+- Added logout and filter drawer ([e013d1b](https://github.com/Algostract/gold-fish-bowl/commit/e013d1b))
+- Update nuxt dependency from 3 to 4 ([fed662d](https://github.com/Algostract/gold-fish-bowl/commit/fed662d))
+- Featured mode added ([28c4ae2](https://github.com/Algostract/gold-fish-bowl/commit/28c4ae2))
+
+#### ⚠️ Breaking Changes
+
+- **api:** ⚠️ New upload api added, talent based role added, api v1 segmented ([8ce396f](https://github.com/Algostract/gold-fish-bowl/commit/8ce396f))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.2.11
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.10...v0.2.11)
