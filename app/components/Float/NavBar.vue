@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const urls = [
   { url: '/', id: 'home', label: 'Home', icon: 'local:home' },
-  { url: '/model', id: 'grid', label: 'Grid', icon: 'local:grid' },
+  { url: '/talents/models', id: 'grid', label: 'Grid', icon: 'local:grid' },
   { url: '/highlighted', id: 'high', label: 'highlighted', icon: 'local:love' },
 ]
 

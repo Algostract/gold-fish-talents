@@ -9,12 +9,12 @@ const {
 
 const route = useRoute()
 const slug = route.params.slug!.toString()
-const { data: model } = await useFetch(`/api/model/${slug}`)
+const { data: model } = await useFetch(`/api/v1/talents/models/${slug}`)
 if (!model.value) {
   throw createError({ statusCode: 404, statusMessage: 'Model not found' })
 }
-const { data: photos } = useFetch(`/api/model/${slug}/photo`, { default: () => [] })
-const { data: videos } = useFetch(`/api/model/${slug}/video`, { default: () => [] })
+const photos = model.value.projects[0]?.media.photo
+const videos = model.value.projects[0]?.media.video
 
 const title = `${model.value?.name}`
 const description = `${model.value?.description}`
@@ -83,8 +83,8 @@ const shareAsset = ref<ShareAsset>({
       <!-- <CompositionOverlay /> -->
       <CardModelDetail class="absolute bottom-24 left-0" :model="model" :is-open="isModelDetailOpen" @is-open="(value) => (isModelDetailOpen = value)" />
     </section>
-    <PhotoGallery :photos="photos" />
-    <VideoGallery :videos="videos" />
+    <PhotoGallery v-if="photos" :photos="photos" />
+    <VideoGallery v-if="videos" :videos="videos" />
     <FloatActionBar :share-asset="shareAsset" :asset-type="'model'" />
   </main>
 </template>

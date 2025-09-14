@@ -10,7 +10,7 @@ const {
 
 const { proxy: gaProxy } = useScriptGoogleAnalytics()
 
-const { data, refresh } = await useFetch('/api/model/dashboard')
+const { data, refresh } = await useFetch('/api/v1/talents/models/dashboard')
 
 type Action = 'share' | 'models' | 'highlight'
 
@@ -29,7 +29,7 @@ const title = `${data.value?.name}`
 const shareAsset = ref<ShareAsset>({
   name: title,
   imageUrl: `https://ucarecdn.com/${data.value?.photo.image}/-/format/jpeg/-/scale_crop/720x960/50p,0p/`,
-  url: `${siteUrl}/model/${data.value?.id}`,
+  url: `${siteUrl}/talents/models/${data.value?.id}`,
 })
 
 async function handleAction(action: Action) {
@@ -40,7 +40,7 @@ async function handleAction(action: Action) {
       break
     }
     case 'models': {
-      navigateTo('/model')
+      navigateTo('/talents/models')
       break
     }
     case 'highlight':

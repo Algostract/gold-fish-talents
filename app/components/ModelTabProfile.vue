@@ -10,7 +10,7 @@ type ModelUpdateFormData = z.infer<typeof modelFormSchema>
 
 const { r$ } = useRegleSchema(props.data, modelFormSchema)
 
-const { status, execute } = useFetch('/api/model/dashboard', {
+const { status, execute } = useFetch('/api/v1/talents/models', {
   method: 'POST',
   body: r$.$value,
   immediate: false,

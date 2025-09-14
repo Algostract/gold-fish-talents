@@ -1,4 +1,4 @@
-import type { TypesenseModel } from '../search/sync.post'
+import type { TypesenseModel } from '~~/server/api/search/sync.post'
 
 export default defineEventHandler<Promise<Model[]>>(async (event) => {
   try {
@@ -10,7 +10,7 @@ export default defineEventHandler<Promise<Model[]>>(async (event) => {
       .search({
         q: searchParams.query,
         query_by: searchParams.queryBy,
-        filter_by: 'status:=Active&&' + searchParams.filterBy, // e.g. "isFeatured:=true"
+        filter_by: 'status:=Active' + (searchParams.filterBy ? `&&${searchParams.filterBy}` : ''), // e.g. "isFeatured:=true"
         sort_by: searchParams.sortBy,
         per_page: searchParams.perPage,
         page: searchParams.page,
@@ -34,7 +34,7 @@ export default defineEventHandler<Promise<Model[]>>(async (event) => {
         reviewCount: document.reviewCount,
         coordinate: document.coordinate,
         isFeatured: document.isFeatured,
-        url: `/model/${document.id}`,
+        url: `/talents/models/${document.id}`,
       })) ?? []
     )
   } catch (error) {

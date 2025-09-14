@@ -20,7 +20,7 @@ const urls: {
 async function handleAction(action: Action) {
   switch (action) {
     case 'back':
-      navigateTo(`/${props.assetType}`)
+      navigateTo(`/talents/${props.assetType}s`)
       break
     case 'share': {
       await share(props.shareAsset)

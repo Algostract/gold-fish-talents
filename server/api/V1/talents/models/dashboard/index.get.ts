@@ -1,9 +1,9 @@
 export default defineEventHandler(async (event) => {
   try {
-    const { user } = await requireUserSession(event)
-
     const config = useRuntimeConfig()
     const notionDbId = config.private.notionDbId as unknown as NotionDB
+
+    const { user } = await requireUserSession(event)
 
     const query = await notion.databases.query({
       database_id: notionDbId.model,
@@ -14,24 +14,11 @@ export default defineEventHandler(async (event) => {
     })
     const model = query.results[0] as unknown as NotionModel
 
-    const projects = (
-      await notion.databases.query({
-        database_id: notionDbId.project,
-        filter: {
-          property: 'Model',
-          relation: { contains: model.id },
-        },
-      })
-    ).results as unknown as NotionProject[]
-
-    const slug = model.properties.Slug.formula.string
+    const modelSlug = model.properties.Slug.formula.string
     const title = notionTextStringify(model.properties.Name.title)
 
-    const photos = await $fetch(`/api/model/${slug}/photo`)
-    const videos = await $fetch(`/api/model/${slug}/video`)
-
     return {
-      id: slug,
+      id: modelSlug,
       name: title,
       photo: {
         image: model.cover?.type === 'external' ? model.cover.external.url.split('/')[3] : undefined,
@@ -51,26 +38,7 @@ export default defineEventHandler(async (event) => {
       facebook: '',
       instagram: '',
       why: notionTextStringify(model.properties.Description.rich_text),
-      projects: await Promise.all(
-        projects.map<Promise<Project>>(async ({ id, cover, properties }) => {
-          return {
-            id: id,
-            name: notionTextStringify(properties.Name.title),
-            image: cover?.type === 'external' ? cover.external.url.split('/')[3] : undefined,
-            datetime: properties['Shoot Date/Time'].date.start,
-            location: {
-              name: notionTextStringify(properties.Name.title),
-              address: notionTextStringify(properties.Address.rich_text),
-            },
-            mapUrl: properties.Map.url,
-            helpline: '+919433128726',
-            media: {
-              photo: photos.filter(({ projectId }) => projectId === id),
-              video: videos.filter(({ projectId }) => projectId === id),
-            },
-          }
-        })
-      ),
+      projects: await $fetch(`/api/v1/projects`, { query: { modelSlug } }),
     }
   } catch (error: unknown) {
     if (error instanceof Error && 'statusCode' in error) {

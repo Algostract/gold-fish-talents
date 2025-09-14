@@ -4,12 +4,13 @@ import type { Codec, Device } from '~~/server/utils/transcode-video'
 
 export default defineEventHandler(async (event) => {
   try {
-    const { slug: modelSlug } = await getValidatedRouterParams(
+    const { slug: projectSlug } = await getValidatedRouterParams(
       event,
       z.object({
         slug: z.string().min(1),
       }).parse
     )
+    const { user } = await requireUserSession(event)
 
     const formData = await readFormData(event)
 
@@ -18,10 +19,8 @@ export default defineEventHandler(async (event) => {
     const targetDevice = formData.get('device') as Device
 
     const file = formData.get('file') as File
-    const title = formData.get('title') as string
     const description = (formData.get('description') ?? '') as string
     const featured = Boolean(formData.get('featured') as string)
-    const projectSlug = formData.get('projectSlug') as string
 
     if (!file || !file.size) {
       throw createError({ statusCode: 400, message: 'No file provided' })
@@ -74,14 +73,18 @@ export default defineEventHandler(async (event) => {
           // Upload to uploadcare cdn
           const { file: fileId } = await uploadcareUploadImage(imageFile)
 
+          const modelId = user.id
+          const projects = await notionQueryDb<NotionProject>(notion, notionDbId.project)
+          const projectId = projects.find(({ properties }) => slugify(notionTextStringify(properties.Name.title)) === projectSlug)?.id
+
           const response = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
             filter: {
               and: [
                 {
                   property: 'Project',
-                  relation: projectSlug
+                  relation: projectId
                     ? {
-                        contains: projectSlug,
+                        contains: projectId,
                       }
                     : {
                         is_empty: true,
@@ -90,7 +93,7 @@ export default defineEventHandler(async (event) => {
                 {
                   property: 'Model',
                   relation: {
-                    contains: modelSlug,
+                    contains: modelId,
                   },
                 },
                 {
@@ -129,7 +132,7 @@ export default defineEventHandler(async (event) => {
                   {
                     type: 'text',
                     text: {
-                      content: title,
+                      content: description,
                     },
                   },
                 ],
@@ -146,10 +149,10 @@ export default defineEventHandler(async (event) => {
               },
               Project: {
                 type: 'relation',
-                relation: projectSlug
+                relation: projectId
                   ? [
                       {
-                        id: projectSlug,
+                        id: projectId,
                       },
                     ]
                   : [],
@@ -158,7 +161,7 @@ export default defineEventHandler(async (event) => {
                 type: 'relation',
                 relation: [
                   {
-                    id: modelSlug,
+                    id: modelId,
                   },
                 ],
               },

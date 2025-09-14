@@ -4,12 +4,13 @@ import { differenceInYears, parseISO } from 'date-fns'
 export default defineCachedEventHandler<Promise<DetailedModel>>(
   async (event) => {
     try {
-      const { slug } = await getValidatedRouterParams(
+      const { slug: modelSlug } = await getValidatedRouterParams(
         event,
         z.object({
           slug: z.string().min(1),
         }).parse
       )
+
       const config = useRuntimeConfig()
       const notionDbId = config.private.notionDbId as unknown as NotionDB
 
@@ -19,7 +20,7 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
             {
               property: 'Slug',
               formula: {
-                string: { contains: slug },
+                string: { contains: modelSlug },
               },
             },
           ],
@@ -27,27 +28,14 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
       })
 
       const model = models[0]
-      if (!models || !models.length || !model) {
-        throw createError({ statusCode: 404, statusMessage: `model ${slug} not found` })
+      if (!models || !models.length) {
+        throw createError({ statusCode: 404, statusMessage: `model ${modelSlug} not found` })
       }
-
-      const projects = (
-        await notion.databases.query({
-          database_id: notionDbId.project,
-          filter: {
-            property: 'Model',
-            relation: { contains: model.id },
-          },
-        })
-      ).results as unknown as NotionProject[]
-
-      const photos = await $fetch(`/api/model/${slug}/photo`)
-      const videos = await $fetch(`/api/model/${slug}/video`)
 
       const title = notionTextStringify(model.properties.Name.title)
 
       return {
-        id: slug,
+        id: modelSlug,
         name: title,
         description: `${title} is one of the Gold Fish Bowl's Talented Model`,
         gender: model.properties.Gender.select.name as Gender,
@@ -74,7 +62,7 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
           },
           professionalBackground: {
             profession: notionTextStringify(model.properties.Profession.rich_text),
-            education: notionTextStringify(model.properties.Profession.rich_text),
+            education: notionTextStringify(model.properties.Education.rich_text),
             /*  hasPassport: true,
              experienceYears: 3, */
           },
@@ -103,28 +91,9 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
         rating: 0,
         reviewCount: 0,
         coordinate: [model.properties.Longitude.number, model.properties.Latitude.number],
-        projects: await Promise.all(
-          projects.map<Promise<Project>>(async ({ id, cover, properties }) => {
-            return {
-              id: id,
-              name: notionTextStringify(properties.Name.title),
-              image: cover?.type === 'external' ? cover.external.url.split('/')[3] : undefined,
-              datetime: properties['Shoot Date/Time'].date.start,
-              location: {
-                name: notionTextStringify(properties.Name.title),
-                address: notionTextStringify(properties.Address.rich_text),
-              },
-              mapUrl: properties.Map.url,
-              helpline: '+919433128726',
-              media: {
-                photo: photos.filter(({ projectId }) => projectId === id),
-                video: videos.filter(({ projectId }) => projectId === id),
-              },
-            }
-          })
-        ),
+        projects: await $fetch(`/api/v1/projects`, { query: { modelSlug } }),
         isFeatured: false,
-        url: `/model/${slug}`,
+        url: `/talents/models/${modelSlug}`,
       } as DetailedModel
     } catch (error) {
       if (error instanceof Error && 'statusCode' in error) {

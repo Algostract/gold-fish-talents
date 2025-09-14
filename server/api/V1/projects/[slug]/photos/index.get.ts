@@ -3,7 +3,7 @@ import { z } from 'zod'
 export default defineCachedEventHandler<Promise<Photo[]>>(
   async (event) => {
     try {
-      const { slug: modelSlug } = await getValidatedRouterParams(
+      const { slug: projectSlug } = await getValidatedRouterParams(
         event,
         z.object({
           slug: z.string().min(1),
@@ -12,32 +12,21 @@ export default defineCachedEventHandler<Promise<Photo[]>>(
 
       const config = useRuntimeConfig()
       const notionDbId = config.private.notionDbId as unknown as NotionDB
-      const models = await notionQueryDb<NotionModel>(notion, notionDbId.model, {
-        filter: {
-          and: [
-            {
-              property: 'Slug',
-              formula: {
-                string: {
-                  contains: modelSlug,
-                },
-              },
-            },
-          ],
-        },
-      })
 
-      if (!models.length) throw createError({ statusCode: 404, statusMessage: 'Photo not found', fatal: true })
-
-      const modelId = notionNormalizeId(models[0].id)
+      const projects = await notionQueryDb<NotionProject>(notion, notionDbId.project)
+      const projectId = projects.find(({ properties }) => slugify(notionTextStringify(properties.Name.title)) === projectSlug)?.id
       const assets = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
         filter: {
           and: [
             {
-              property: 'Model',
-              relation: {
-                contains: modelId,
-              },
+              property: 'Project',
+              relation: projectId
+                ? {
+                    contains: projectId,
+                  }
+                : {
+                    is_empty: true,
+                  },
             },
           ],
         },

@@ -1,25 +1,23 @@
 import { z } from 'zod'
 import { toUint8Array } from 'undio'
-import { randomUUID } from 'uncrypto'
 
 export default defineEventHandler(async (event) => {
   try {
-    const { slug: modelSlug } = await getValidatedRouterParams(
+    const { slug: projectSlug } = await getValidatedRouterParams(
       event,
       z.object({
         slug: z.string().min(1),
       }).parse
     )
+    const { user } = await requireUserSession(event)
 
     const formData = await readFormData(event)
 
     const file = formData.get('file') as File
-    const title = formData.get('title') as string
     const description = (formData.get('description') ?? '') as string
     const featured = Boolean(formData.get('featured') as string)
-    const projectSlug = formData.get('projectSlug') as string
 
-    const fileName = `${randomUUID()}.${file.name.split('.').at(-1)?.toLowerCase()}`
+    const fileName = `${file.name.split('.')[0]}.${file.name.split('.').at(-1)?.toLowerCase()}`
 
     if (!file || !file.size) {
       throw createError({ statusCode: 400, message: 'No file provided' })
@@ -49,24 +47,29 @@ export default defineEventHandler(async (event) => {
     // modelSlug (manjira-mitra-13) -> modelNotionId ()
     // projectSlug () -> projectNotionId ()
     // console.log({ projectSlug, modelSlug })
+    const modelId = user.id
+    const projects = await notionQueryDb<NotionProject>(notion, notionDbId.project)
+    const projectId = projects.find(({ properties }) => slugify(notionTextStringify(properties.Name.title)) === projectSlug)?.id
+    // console.log({ projectId, modelId })
 
     const response = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
       filter: {
         and: [
           {
             property: 'Project',
-            relation: projectSlug
+            relation: projectId
               ? {
-                  contains: projectSlug,
+                  contains: projectId,
                 }
               : {
                   is_empty: true,
                 },
           },
           {
+            // TODO: add user type
             property: 'Model',
             relation: {
-              contains: modelSlug,
+              contains: modelId,
             },
           },
           {
@@ -80,7 +83,6 @@ export default defineEventHandler(async (event) => {
     })
     const lastIndex = response.reduce((max, page) => {
       const indexValue = page.properties?.Index?.number ?? 0
-
       return indexValue > max ? indexValue : max
     }, 0)
 
@@ -105,7 +107,7 @@ export default defineEventHandler(async (event) => {
             {
               type: 'text',
               text: {
-                content: title,
+                content: description,
               },
             },
           ],
@@ -122,21 +124,23 @@ export default defineEventHandler(async (event) => {
         },
         Project: {
           type: 'relation',
-          relation: projectSlug
+          relation: projectId
             ? [
                 {
-                  id: projectSlug,
+                  id: projectId,
                 },
               ]
             : [],
         },
         Model: {
           type: 'relation',
-          relation: [
-            {
-              id: modelSlug,
-            },
-          ],
+          relation: modelId
+            ? [
+                {
+                  id: modelId,
+                },
+              ]
+            : [],
         },
         Type: {
           type: 'select',

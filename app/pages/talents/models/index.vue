@@ -29,7 +29,7 @@ function onFeeUpdate(min: number, max: number) {
   filterBy.value.fee.value.max = max
 }
 
-const { data: models, status } = useFetch('/api/model', { query: allParams })
+const { data: models, status } = useFetch('/api/v1/talents/models', { query: allParams })
 const allModels = ref<Model[]>(models.value ?? [])
 const hasMore = ref(true)
 const isLoading = ref(false)
@@ -141,8 +141,8 @@ const isDrawerOpen = ref(false)
                 @click="sortBy.type = 'popularity'" />
               <BaseLabel icon="star" title="Rating" size="S" class="flex-shrink-0"
                 :class="{ '!text-white bg-primary-500': sortBy.type == 'rating' }" @click="sortBy.type = 'rating'" />
-              <BaseLabel icon="money" title="Price" size="S" class="flex-shrink-0"
-                :class="{ '!text-white bg-primary-500': sortBy.type == 'price' }" @click="sortBy.type = 'price'" /> -->
+              <BaseLabel icon="money" title="Fee" size="S" class="flex-shrink-0"
+                :class="{ '!text-white bg-primary-500': sortBy.type == 'fee' }" @click="sortBy.type = 'fee'" /> -->
             </div>
             <span>Order</span>
             <div class="flex flex-wrap gap-3">
@@ -156,7 +156,7 @@ const isDrawerOpen = ref(false)
           </section>
           <section class="">
             <div class="grid grid-cols-2 grid-rows-2 gap-y-2">
-              <span>Price</span>
+              <span>Fee</span>
               <span class="justify-self-end">₹{{ filterBy.fee.value.min }} - ₹{{ filterBy.fee.value.max }}</span>
               <AppSlider :limit="filterBy.fee.limit" :value="filterBy.fee.value" :step="500" class="col-span-2" @update="onFeeUpdate" />
             </div>

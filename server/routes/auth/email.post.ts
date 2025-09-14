@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
           { maxAge: 30 * 24 * 60 * 60 * 1000 }
         )
 
-        navigateTo = user.isProfileComplete ? '/model/dashboard' : '/auth/signup'
+        navigateTo = user.isProfileComplete ? '/talents/models/dashboard' : '/auth/signup'
       }
     }
 

@@ -51,7 +51,7 @@ watch(
   }
 )
 
-const { status, execute } = useFetch('/api/model/dashboard', {
+const { status, execute } = useFetch('/api/v1/talents/models', {
   method: 'POST',
   body: r$.$value,
   immediate: false,
@@ -65,7 +65,7 @@ async function onSubmit() {
   await execute()
 
   if (status.value === 'success') {
-    await navigateTo('/model/dashboard')
+    await navigateTo('/talents/models/dashboard')
   }
 }
 

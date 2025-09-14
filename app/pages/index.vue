@@ -29,13 +29,13 @@ useSchemaOrg([
   }),
 ])
 
-const { data: featuredTalents } = await useFetch('/api/model', {
+const { data: featuredTalents } = await useFetch('/api/v1/talents/models', {
   query: {
     query: '',
     queryBy: 'name',
-    filterBy: '',
+    // filterBy: '',
     sortBy: 'name:asc',
-    perPage: 10,
+    perPage: 8,
   },
   default: () => [],
 })
@@ -78,7 +78,7 @@ const featuredVideo = {
         </div>
         <div class="flex gap-2">
           <NuxtLink to="/auth/signin" class="text-md w-full rounded-full bg-light-500 px-4 py-3 text-center text-primary-500 dark:bg-dark-500"> Sign In </NuxtLink>
-          <NuxtLink to="/model" class="text-md w-full rounded-full bg-primary-500 px-4 py-3 text-center text-dark-500"> Get started</NuxtLink>
+          <NuxtLink to="/talents/models" class="text-md w-full rounded-full bg-primary-500 px-4 py-3 text-center text-dark-500"> Get started </NuxtLink>
         </div>
       </div>
       <NuxtVideo

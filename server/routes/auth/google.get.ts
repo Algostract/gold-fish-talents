@@ -85,7 +85,7 @@ export default defineOAuthGoogleEventHandler({
       { maxAge: 30 * 24 * 60 * 60 * 1000 }
     )
 
-    return sendRedirect(event, user.isProfileComplete ? '/model/dashboard' : '/auth/signup')
+    return sendRedirect(event, user.isProfileComplete ? '/talents/models/dashboard' : '/auth/signup')
   },
   onError(event, error) {
     console.error('Google OAuth error:', error)

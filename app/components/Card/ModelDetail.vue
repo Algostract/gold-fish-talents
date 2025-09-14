@@ -61,11 +61,15 @@ function toggleOpen() {
     :class="{ '-translate-x-[92%]': !isOpen }">
     <div class="relative flex size-full flex-col justify-between gap-5 p-6">
       <h1 class="whitespace-nowrap text-xl">{{ model.name }}</h1>
+      <div class="-my-2 flex gap-4">
+        <span class="text-sm">{{ model.age }} Year,</span>
+        <span class="text-sm"> {{ model.gender }}</span>
+      </div>
       <!-- Auto-discovered Sections -->
       <div class="flex flex-1 flex-col gap-6 overflow-y-auto">
         <div v-for="section in sections" :key="section.key">
           <h2 class="text-md mb-3">{{ section.title }}</h2>
-          <div class="grid grid-cols-2 text-sm">
+          <div class="grid grid-cols-2 gap-4 text-sm">
             <div v-for="item in section.items" :key="item.label" class="flex flex-col gap-2 capitalize">
               <span>{{ item.label }}</span>
               <span :class="item.color ? `text-[${item.color}]` : ''">
@@ -78,6 +82,7 @@ function toggleOpen() {
       <button class="absolute right-0 top-3/4 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg bg-primary-500" @click="toggleOpen">
         <NuxtIcon name="local:chevron-bold" class="fill-black duration-300" :class="{ 'rotate-180': !isOpen }" />
       </button>
+
       <div class="flex flex-col gap-1">
         <h2 class="text-xl">Fee</h2>
         <p class="text-lg">₹ {{ model.fee }} / day</p>

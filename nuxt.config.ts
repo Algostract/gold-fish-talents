@@ -118,6 +118,7 @@ export default defineNuxtConfig({
       vapidKey: '',
       vapidSubject: '',
       emailMetaData: '',
+      steganographyKey: '',
       mapApiKey: '',
       paymentUpiInfo: '',
     },
