@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.1
+
+[compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.3.0...v0.3.1)
+
+### 🩹 Fixes
+
+- Talent pagination listing fixed ([390b663](https://github.com/Algostract/gold-fish-bowl/commit/390b663))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.3.0
 
 [compare changes](https://github.com/Algostract/gold-fish-bowl/compare/v0.2.11...v0.3.0)
