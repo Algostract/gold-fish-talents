@@ -16,7 +16,7 @@ const activeModel = useState<string | null>()
 
 <template>
   <div class="relative isolate grid aspect-[170/227] grid-cols-1 grid-rows-1">
-    <AppRibbon :title="'Featured'" class="absolute -left-2 top-2 z-10" />
+    <AppRibbon v-if="isFeatured" :title="'Featured'" class="absolute -left-2 top-2 z-10" />
     <NuxtLink :to="url" class="col-span-full col-start-1 row-span-full row-start-1 size-full overflow-clip rounded-md bg-light-500 dark:bg-dark-500" @click="activeModel = name">
       <NuxtImg
         :src="`${photo.image}/-/scale_crop/480x640/50p,0p/`"

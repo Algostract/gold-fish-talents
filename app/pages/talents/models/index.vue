@@ -3,6 +3,11 @@ definePageMeta({
   layout: false,
 })
 
+function onFeeUpdate(min: number, max: number) {
+  filterBy.value.fee.value.min = min
+  filterBy.value.fee.value.max = max
+}
+
 const filterBy = ref({
   fee: { limit: { min: 0, max: 5000 }, value: { min: 0, max: 5000 } },
 })
@@ -17,53 +22,75 @@ const pageParams = ref<PageParams>({
   page: 1,
 })
 
-const allParams = computed(() => ({
+/**
+ * 🔹 Computed query params
+ */
+const queryParams = computed(() => ({
   ...searchParams.value,
   filterBy: `fee:[${filterBy.value.fee.value.min}..${filterBy.value.fee.value.max}]`,
   sortBy: 'name:asc',
   ...pageParams.value,
 }))
 
-function onFeeUpdate(min: number, max: number) {
-  filterBy.value.fee.value.min = min
-  filterBy.value.fee.value.max = max
-}
+const debouncedQueryParams = debouncedRef(queryParams, 300)
 
-const { data: models, status } = useFetch('/api/v1/talents/models', { query: allParams })
-const allModels = ref<Model[]>(models.value ?? [])
-const hasMore = ref(true)
-const isLoading = ref(false)
-
-watch(status, (value) => {
-  if (value == 'success' && models.value) {
-    allModels.value.push(...models.value)
-    hasMore.value = !!models.value?.length
-  }
+/**
+ * 🔹 Fetch API
+ */
+const { data: models, status } = useFetch<Model[]>('/api/v1/talents/models', {
+  query: debouncedQueryParams,
+  default: () => [],
 })
 
+/**
+ * 🔹 State
+ */
+const allModels = ref<Model[]>(models.value)
+const hasMore = ref(true)
+
+const isLoading = computed(() => status.value === 'pending' && !allModels.value.length)
+
+/**
+ * 🔹 Append new data whenever models update
+ */
+watch(status, (value) => {
+  if (!value) return
+  console.log({ status: status.value, models: models.value, pageParams: pageParams.value })
+  if (pageParams.value.page === 1) {
+    // fresh search → reset
+    allModels.value = [...models.value]
+  } else if (status.value === 'success') {
+    // append
+    allModels.value.push(...models.value)
+  }
+
+  hasMore.value = value.length > 0
+})
+
+/**
+ * 🔹 Reset when filters/search change
+ */
 watch(
   () => [searchParams.value.query, searchParams.value.queryBy, filterBy.value.fee.value.min, filterBy.value.fee.value.max],
   () => {
-    allModels.value = []
     hasMore.value = true
     pageParams.value.page = 1
   }
 )
 
-const listContainer = useTemplateRef('listContainer')
+/**
+ * 🔹 Infinite scroll
+ */
+const listContainer = useTemplateRef('list-container')
+
 useInfiniteScroll(
   listContainer,
   () => {
-    if (!isLoading.value && hasMore.value) {
+    if (hasMore.value && status.value === 'success') {
       pageParams.value.page++
     }
   },
-  {
-    distance: 10,
-    canLoadMore: () => {
-      return hasMore.value && status.value !== 'pending'
-    },
-  }
+  { distance: 10 }
 )
 
 const { state: viewMode, next: changeViewMode } = useCycleList(['list', 'map'])
@@ -92,9 +119,11 @@ const isDrawerOpen = ref(false)
     </div>
     <section
       v-show="viewMode === 'list'"
-      ref="listContainer"
+      ref="list-container"
       class="target scrollbar-hidden relative col-span-full col-start-1 block h-full items-center justify-items-center overflow-y-auto p-2 md:col-start-2">
-      <div class="mx-auto mb-20 grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:gap-8">
+      <div v-if="isLoading">Loading Model</div>
+      <!--  -->
+      <div v-else class="mx-auto mb-20 grid w-full grid-cols-2 gap-2 md:grid-cols-4 md:gap-8">
         <CardModel
           v-for="{ id, name, gender, age, fee, photo, rating, reviewCount, coordinate, isFeatured, url } in allModels"
           :id="id"

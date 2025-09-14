@@ -42,51 +42,57 @@ function onClose() {
   emit('close')
 }
 </script>
-
 <template>
-  <Transition>
-    <div v-if="isOpen" ref="container" class="container fixed bottom-0 left-0 z-50 size-full" :class="{ 'bg-black/50': isBackdrop }" v-bind="$attrs" @click.self="onClose">
-      <div
-        :style="!isFixed ? { height: `${height}%` } : {}"
-        :class="{ 'h-fit': isFixed }"
-        class="drawer absolute bottom-0 left-0 z-50 flex w-screen flex-col items-center rounded-t-[2rem] bg-dark-400 transition-[height] duration-300">
-        <div ref="pull-tap" class="absolute left-1/2 top-0 -translate-x-1/2 px-16 py-5 after:block after:h-[5px] after:w-12 after:rounded-full after:bg-dark-600/60" />
-        <div class="relative mb-4 mt-10 w-screen overflow-y-scroll px-4 py-1" v-bind="$attrs">
-          <slot />
-        </div>
+  <!-- Backdrop -->
+  <Transition name="fade">
+    <div v-if="isOpen" ref="container" class="container fixed bottom-0 left-0 z-50 size-full bg-black/50" :class="{ 'bg-black/50': isBackdrop }" @click.self="onClose" />
+  </Transition>
+
+  <!-- Drawer -->
+  <Transition name="slide-up">
+    <div
+      v-if="isOpen"
+      :style="!isFixed ? { height: `${height}%` } : {}"
+      :class="{ 'h-fit': isFixed }"
+      class="drawer fixed bottom-0 left-0 z-[100] flex w-screen flex-col items-center rounded-t-[2rem] bg-dark-400 transition-[height] duration-300">
+      <div ref="pull-tap" class="absolute left-1/2 top-0 -translate-x-1/2 px-16 py-5 after:block after:h-[5px] after:w-12 after:rounded-full after:bg-dark-600/60" />
+      <div class="relative mb-4 mt-10 w-screen overflow-y-scroll px-4 py-1">
+        <slot />
       </div>
     </div>
   </Transition>
 </template>
 
-<style>
-.v-enter-active .container,
-.v-leave-active .container {
-  @apply transition duration-300 ease-in-out;
+<style scoped>
+/* Overlay fade */
+.fade-enter-active,
+.fade-leave-active {
+  @apply transition-opacity duration-300;
 }
 
-.v-enter-from .container,
-.v-leave-to .container {
-  @apply translate-y-full transform;
+.fade-enter-from,
+.fade-leave-to {
+  @apply opacity-0;
 }
 
-.v-enter-to .container,
-.v-leave-from .container {
-  @apply translate-y-0 transform;
+.fade-enter-to,
+.fade-leave-from {
+  @apply opacity-100;
 }
 
-.v-enter-active .drawer,
-.v-leave-active .drawer {
-  @apply transition duration-300 ease-in-out;
+/* Drawer slide-up */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  @apply transition-transform duration-300 ease-in-out;
 }
 
-.v-enter-from .drawer,
-.v-leave-to .drawer {
-  @apply translate-y-full transform;
+.slide-up-enter-from,
+.slide-up-leave-to {
+  @apply translate-y-full;
 }
 
-.v-enter-to .drawer,
-.v-leave-from .drawer {
-  @apply translate-y-0 transform;
+.slide-up-enter-to,
+.slide-up-leave-from {
+  @apply translate-y-0;
 }
 </style>

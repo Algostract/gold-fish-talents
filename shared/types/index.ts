@@ -227,6 +227,10 @@ export interface NotionModel {
         name: 'Unfilled' | 'Filled' | 'Verified' | 'Active' | 'Inactive'
       }
     }
+    Featured: {
+      type: 'checkbox'
+      checkbox: boolean
+    }
     Description: {
       type: 'rich_text'
       rich_text: { text: { content: string } }[]

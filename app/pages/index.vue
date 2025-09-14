@@ -33,7 +33,7 @@ const { data: featuredTalents } = await useFetch('/api/v1/talents/models', {
   query: {
     query: '',
     queryBy: 'name',
-    // filterBy: '',
+    filterBy: 'isFeatured:=true',
     sortBy: 'name:asc',
     perPage: 8,
   },

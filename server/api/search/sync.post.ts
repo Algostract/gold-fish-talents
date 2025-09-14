@@ -18,7 +18,7 @@ export async function syncSearchDb() {
     .map(({ cover, properties }): TypesenseModel | null => {
       const title = notionTextStringify(properties.Name.title)
 
-      if (!(properties.Latitude.number && properties.Longitude.number && properties.DOB.date?.start && cover?.type === 'external')) return null
+      if (!(properties.Status.status.name === 'Active' && properties.DOB.date?.start && cover?.type === 'external')) return null
 
       return {
         id: properties.Slug.formula.string,
@@ -33,8 +33,8 @@ export async function syncSearchDb() {
         'photo.aspectRatio': 16 / 9,
         rating: 0,
         reviewCount: 0,
-        coordinate: [properties.Longitude.number, properties.Latitude.number],
-        isFeatured: false,
+        coordinate: [properties.Longitude?.number, properties.Latitude?.number],
+        isFeatured: properties.Featured.checkbox,
       }
     })
     .filter((item) => item !== null)
