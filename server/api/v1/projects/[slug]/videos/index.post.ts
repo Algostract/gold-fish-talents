@@ -1,6 +1,9 @@
 import { z } from 'zod'
 import { toUint8Array } from 'undio'
 import type { Codec, Device } from '~~/server/utils/transcode-video'
+import { Client } from '@notionhq/client'
+
+type Category = 'food' | 'product' | 'ecommerce'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -20,7 +23,11 @@ export default defineEventHandler(async (event) => {
 
     const file = formData.get('file') as File
     const description = (formData.get('description') ?? '') as string
-    const featured = Boolean(formData.get('featured') as string)
+    // const featured = Boolean(formData.get('featured') as string)
+    const category = formData.get('category') as Category
+
+    const title = `${file.name.split('.')[0]}`
+    const fileName = `${title}.${file.name.split('.').at(-1)?.toLowerCase()}`
 
     if (!file || !file.size) {
       throw createError({ statusCode: 400, message: 'No file provided' })
@@ -37,15 +44,15 @@ export default defineEventHandler(async (event) => {
       (async () => {
         try {
           const buffer = await toUint8Array(file)
-          await storage.setItemRaw(`videos/source/${file.name}`, buffer)
+          await storage.setItemRaw(`videos/source/${fileName}`, buffer)
 
-          console.log(`File Saved ${file.name}`)
+          console.log(`File Saved ${fileName}`)
           await streamResponse({
-            fileName: file.name,
+            fileName: fileName,
             status: `saved`,
           })
 
-          const { width: originalWidth = 0, height: originalHeight = 0 } = await getDimension(file.name, 'video')
+          const { width: originalWidth = 0, height: originalHeight = 0 } = await getDimension(fileName, 'video')
           const resolutionLabel = getResolution(originalWidth, originalHeight)
           const resolution = parseInt(resolutionLabel.slice(0, -1))
           const aspectRatioLabel = getAspectRatio(originalWidth, originalHeight)
@@ -60,148 +67,178 @@ export default defineEventHandler(async (event) => {
               const resolution = parseInt(resolutionLabel.slice(0, -1))
               const expectedDim = calculateDimension(resolution, aspectRatio)
 
-              const status = await transcodeVideo(`./static/videos/source/${file.name}`, `./static/videos`, expectedDim, codec, targetDevice, streamResponse)
+              const status = await transcodeVideo(`./static/videos/source/${fileName}`, `./static/videos`, expectedDim, codec, targetDevice, streamResponse)
               results.push(status)
             }
           }
 
-          console.log(`File processed ${file.name}`)
+          console.log(`File processed ${fileName}`)
 
-          await generateThumbnail(`./static/videos/source/${file.name}`, `./static/photos/source`, '00:00:00.500')
+          await generateThumbnail(`./static/videos/source/${fileName}`, `./static/photos/source`, '00:00:00.500')
           // Transcode image
-          const imageFile = await transcodeImage(`./static/photos/source/${file.name.split('.')[0]}.jpg`, `./static/photos`, expectedWidth, expectedHeight)
+          const imageFile = await transcodeImage(`./static/photos/source/${fileName.split('.')[0]}.jpg`, `./static/photos`, expectedWidth, expectedHeight)
           // Upload to uploadcare cdn
           const { file: fileId } = await uploadcareUploadImage(imageFile)
 
-          const modelId = user.id
-          const projects = await notionQueryDb<NotionProject>(notion, notionDbId.project)
-          const projectId = projects.find(({ properties }) => slugify(notionTextStringify(properties.Name.title)) === projectSlug)?.id
+          const talentId = user.id
+          const talentType = 'Model'
 
-          const response = await notionQueryDb<NotionAsset>(notion, notionDbId.asset, {
-            filter: {
-              and: [
-                {
-                  property: 'Project',
+          const notionClients = [
+            { client: new Client({ auth: import.meta.env.NOTION_RCP_API_KEY }), redcatflag: true },
+            { client: notion, redcatflag: false },
+          ]
+          for (const { client, redcatflag } of notionClients) {
+            const projects = await notionQueryDb<NotionProject>(client, redcatflag ? notionDbId.redcatpicturesProject : notionDbId.project)
+            const projectId = projects.find(({ properties }) => properties.Slug.formula.string === projectSlug)?.id
+
+            const response = await notionQueryDb<NotionAsset>(client, redcatflag ? notionDbId.redcatpicturesAsset : notionDbId.asset, {
+              filter: {
+                and: [
+                  {
+                    property: 'Project',
+                    relation: projectId
+                      ? {
+                          contains: projectId,
+                        }
+                      : {
+                          is_empty: true,
+                        },
+                  },
+                  ...(!redcatflag
+                    ? [
+                        {
+                          property: talentType,
+                          relation: talentId
+                            ? {
+                                contains: talentId,
+                              }
+                            : ({ is_empty: true } as const),
+                        },
+                      ]
+                    : []),
+                  {
+                    property: 'Type',
+                    select: {
+                      equals: 'Video',
+                    },
+                  },
+                ],
+              },
+            })
+            const lastIndex = response.reduce((max, page) => {
+              const indexValue = page.properties?.Index?.number ?? 0
+              return indexValue > max ? indexValue : max
+            }, 0)
+
+            await client.pages.create({
+              parent: {
+                database_id: redcatflag ? notionDbId.redcatpicturesAsset : notionDbId.asset,
+              },
+              cover: {
+                type: 'external',
+                external: {
+                  url: `https://ucarecdn.com/${fileId}/-/preview/${coverWidth}x${coverHeight}/`,
+                },
+              },
+              properties: {
+                Index: {
+                  type: 'number',
+                  number: lastIndex + 1,
+                },
+                Name: {
+                  type: 'title',
+                  title: [
+                    {
+                      type: 'text',
+                      text: {
+                        content: description,
+                      },
+                    },
+                  ],
+                },
+                Description: {
+                  type: 'rich_text',
+                  rich_text: [
+                    {
+                      text: {
+                        content: description,
+                      },
+                    },
+                  ],
+                },
+                Project: {
+                  type: 'relation',
                   relation: projectId
-                    ? {
-                        contains: projectId,
-                      }
-                    : {
-                        is_empty: true,
+                    ? [
+                        {
+                          id: projectId,
+                        },
+                      ]
+                    : [],
+                },
+                ...(!redcatflag
+                  ? {
+                      Featured: {
+                        type: 'checkbox',
+                        checkbox: false,
                       },
-                },
-                {
-                  property: 'Model',
-                  relation: {
-                    contains: modelId,
-                  },
-                },
-                {
-                  property: 'Type',
+                      [talentType]: {
+                        type: 'relation',
+                        relation: talentId
+                          ? [
+                              {
+                                id: talentId,
+                              },
+                            ]
+                          : [],
+                      },
+                    }
+                  : {
+                      Segment: {
+                        type: 'select',
+                        select: {
+                          name: category,
+                        },
+                      },
+                      Featured: {
+                        type: 'number',
+                        number: lastIndex + 1,
+                      },
+                    }),
+                Type: {
+                  type: 'select',
                   select: {
-                    equals: 'Video',
+                    name: 'Video',
                   },
                 },
-              ],
-            },
-          })
-          const lastIndex = response.reduce((max, page) => {
-            const indexValue = page.properties?.Index?.number ?? 0
+                Status: {
+                  type: 'status',
+                  status: {
+                    name: 'Plan',
+                  },
+                },
+                Resolution: {
+                  type: 'select',
+                  select: {
+                    name: resolutionLabel,
+                  },
+                },
+                'Aspect ratio': {
+                  type: 'select',
+                  select: {
+                    name: aspectRatioLabel,
+                  },
+                },
+              },
+            })
 
-            return indexValue > max ? indexValue : max
-          }, 0)
-
-          await notion.pages.create({
-            parent: {
-              database_id: notionDbId.asset,
-            },
-            cover: {
-              type: 'external',
-              external: {
-                url: `https://ucarecdn.com/${fileId}/-/preview/${coverWidth}x${coverHeight}/`,
-              },
-            },
-            properties: {
-              Index: {
-                type: 'number',
-                number: lastIndex + 1,
-              },
-              Name: {
-                type: 'title',
-                title: [
-                  {
-                    type: 'text',
-                    text: {
-                      content: description,
-                    },
-                  },
-                ],
-              },
-              Description: {
-                type: 'rich_text',
-                rich_text: [
-                  {
-                    text: {
-                      content: description,
-                    },
-                  },
-                ],
-              },
-              Project: {
-                type: 'relation',
-                relation: projectId
-                  ? [
-                      {
-                        id: projectId,
-                      },
-                    ]
-                  : [],
-              },
-              Model: {
-                type: 'relation',
-                relation: [
-                  {
-                    id: modelId,
-                  },
-                ],
-              },
-              Type: {
-                type: 'select',
-                select: {
-                  name: 'Video',
-                },
-              },
-              Status: {
-                type: 'status',
-                status: {
-                  name: 'Plan',
-                },
-              },
-              Resolution: {
-                type: 'select',
-                select: {
-                  name: resolutionLabel,
-                },
-              },
-              'Aspect ratio': {
-                type: 'select',
-                select: {
-                  name: aspectRatioLabel,
-                },
-              },
-              Featured: {
-                type: 'checkbox',
-                checkbox: featured,
-              },
-            },
-          })
-
-          await streamResponse({
-            fileName: file.name,
-            status: `processed`,
-            size: file.size,
-            results,
-          })
+            await streamResponse({
+              fileName: fileName,
+              status: `processed`,
+              size: file.size,
+              results,
+            })
+          }
         } catch (error) {
           await streamResponse({ error: (error as Error).message })
         } finally {
@@ -213,6 +250,10 @@ export default defineEventHandler(async (event) => {
     return eventStream.send()
   } catch (error: unknown) {
     console.error('API video POST', error)
+
+    if (error instanceof Error && 'statusCode' in error) {
+      throw error
+    }
 
     throw createError({
       statusCode: 500,

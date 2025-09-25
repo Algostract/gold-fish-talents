@@ -26,7 +26,7 @@ export async function syncSearchDb() {
         age: differenceInYears(new Date(), parseISO(properties.DOB.date.start)),
         name: title,
         status: properties.Status.status.name,
-        fee: properties.Fee.number ?? 0,
+        fee: properties.Fee?.number ?? 0,
         'photo.title': title,
         'photo.image': cover?.type === 'external' ? cover.external.url.split('/')[3] : undefined,
         'photo.description': '',

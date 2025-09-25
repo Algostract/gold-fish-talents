@@ -140,7 +140,7 @@ export interface Video {
 }
 
 /* Server Only */
-export const resourceTypes = ['project', 'model', 'studio', 'asset'] as const
+export const resourceTypes = ['project', 'model', 'studio', 'asset', 'redcatpicturesProject', 'redcatpicturesAsset'] as const
 
 export type ResourceType = (typeof resourceTypes)[number]
 
@@ -169,6 +169,12 @@ export interface NotionProject {
   cover: NotionImage
   icon: NotionImage
   properties: {
+    Slug: {
+      type: 'formula'
+      formula: {
+        string: string
+      }
+    }
     Name: {
       type: 'title'
       title: { plain_text: string }[]

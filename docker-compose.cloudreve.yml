@@ -1,14 +1,30 @@
 version: '3.9'
 services:
-  app:
-    image: ghcr.io/algostract/gold-fish-bowl:latest
+  cloudreve:
+    image: cloudreve/cloudreve:latest
     env_file:
       - .env
     volumes:
-      - gold-fish-bowl_static:/app/static
-      - gold-fish-bowl_data:/app/.data
+      - backend_data:/cloudreve/data
     expose:
-      - 3000
+      - 5212
+    networks:
+      - front-tier
+    depends_on:
+      - postgresql
+      - redis
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  postgresql:
+    image: postgres:17
+    env_file:
+      - .env
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
     networks:
       - front-tier
     deploy:
@@ -17,13 +33,10 @@ services:
         condition: on-failure
         max_attempts: 3
 
-  typesense:
-    image: typesense/typesense:28.0
-    command: --data-dir /data
-    env_file:
-      - .env
+  redis:
+    image: redis:latest
     volumes:
-      - gold-fish-bowl_search-data:/data
+      - redis_data:/data
     networks:
       - front-tier
     deploy:
@@ -33,24 +46,24 @@ services:
         max_attempts: 3
 
 volumes:
-  gold-fish-bowl_static:
+  backend_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /root/gold-fish-bowl/static
-  gold-fish-bowl_data:
+      device: /root/cloudreve/data
+  database_postgres:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /root/gold-fish-bowl/.data
-  gold-fish-bowl_search-data:
+      device: /root/cloudreve/postgres
+  redis_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /root/gold-fish-bowl/.data
+      device: /root/cloudreve/redis
 
 networks:
   front-tier:
