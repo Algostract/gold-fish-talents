@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.3
+
+[compare changes](https://github.com/Algostract/gold-fish-talents/compare/v0.3.2...v0.3.3)
+
+### 💅 Refactors
+
+- Rename project from Gold Fish Bowl to Gold Fish Talents ([14b15f5](https://github.com/Algostract/gold-fish-talents/commit/14b15f5))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.3.2
 
 [compare changes](https://github.com/Algostract/gold-fish-talents/compare/v0.3.1...v0.3.2)
