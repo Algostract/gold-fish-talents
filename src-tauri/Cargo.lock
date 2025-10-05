@@ -1241,7 +1241,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "gold-fish-bowl"
+name = "gold-fish-talents"
 version = "0.0.0"
 dependencies = [
  "log",

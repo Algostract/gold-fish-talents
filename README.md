@@ -2,7 +2,7 @@
   <img src="./public/logo.png" lt="Logo" width="65" />
 <p>
 
-# Gold Fish Bowl
+# Gold Fish Talents
 
 <p align="center">
   <a href="https://shirsendu-bairagi.betteruptime.com">
@@ -56,32 +56,32 @@ docker node ls
 4. Create a docker volume
 
 ```bash
-upload static, .data into /root/gold-fish-bowl
+upload static, .data into /root/gold-fish-talents
 ```
 
 5. Use Docker Stack to deploy multi-container application
 
 ```bash
-docker stack deploy --compose-file docker-compose.prod.yml gold-fish-bowl
+docker stack deploy --compose-file docker-compose.prod.yml gold-fish-talents
 ```
 
 6. Scale service
 
 ```bash
-docker service scale gold-fish-bowl_app=2
+docker service scale gold-fish-talents_app=2
 ```
 
 7. Verify
 
 ```bash
 docker service ls
-docker service ps gold-fish-bowl_app
+docker service ps gold-fish-talents_app
 ```
 
 ## License
 
-Published under the [GNU GPLv3](https://github.com/Algostract/gold-fish-bowl/blob/main/LICENSE) license.
+Published under the [GNU GPLv3](https://github.com/Algostract/gold-fish-talents/blob/main/LICENSE) license.
 <br><br>
-<a href="https://github.com/Algostract/gold-fish-bowl/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=Algostract/gold-fish-bowl" />
+<a href="https://github.com/Algostract/gold-fish-talents/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=Algostract/gold-fish-talents" />
 </a>

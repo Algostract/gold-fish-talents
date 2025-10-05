@@ -6,7 +6,7 @@ defineProps<{
   fromEmail: string
   fromCompanyLogo: string
   emailSubject: string
-  otp: string
+  toTalentName: string
   toEmail: string
 }>()
 

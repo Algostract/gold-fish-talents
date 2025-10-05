@@ -41,7 +41,7 @@ async function onEmailSignIn() {
   <main class="flex min-h-screen w-full items-center justify-center p-5">
     <section class="flex w-full max-w-md flex-col gap-5 rounded-2xl bg-dark-500 p-5 shadow-xl ring-1 ring-dark-600" aria-labelledby="login-heading">
       <header>
-        <h1 id="login-heading" class="text-lg text-white">Welcome to Gold Fish Bowl</h1>
+        <h1 id="login-heading" class="text-lg text-white">Welcome to Gold Fish Talents</h1>
         <p class="mt-1 text-light-600 opacity-70">Log in to your account</p>
       </header>
       <!-- Google sign-in -->

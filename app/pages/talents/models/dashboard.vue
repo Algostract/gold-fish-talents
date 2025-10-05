@@ -66,7 +66,7 @@ function setTab(tab: Tab) {
 </script>
 
 <template>
-  <main v-if="data" class="flex h-dvh w-dvw flex-col items-center justify-center gap-8 p-5 pb-24">
+  <main v-if="data" class="flex h-screen w-screen flex-col items-center justify-center gap-8 p-5 pb-24">
     <!-- Profile Picture -->
     <div class="flex flex-col items-center gap-6">
       <NuxtImg :provider="profileImg.provider" :src="profileImg.src" :alt="data.name" width="128" height="128" loading="eager" fit="cover" class="rounded-full object-cover object-top" />

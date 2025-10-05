@@ -31,19 +31,19 @@ export default defineEventHandler(async (event) => {
     const notionDbId = config.private.notionDbId as unknown as NotionDB
 
     const buffer = await toUint8Array(file)
-    const signedBuffer = await stegoEncode(
-      buffer,
-      JSON.stringify({
-        copyright: '© Gold Fish Bowl',
-        terms: 'All Rights Reserved',
-        year: '2025',
-        // "id": "9b8f3c2a-4d1e-4a6f-bf2e-7d5a946ab123",
-        // "url": `${config.public.siteUrl}/photo`,
-        ts: new Date().toISOString(),
-      }),
-      config.private.steganographyKey
-    )
-    await storage.setItemRaw(`photos/source/${fileName}`, signedBuffer)
+    /*     const signedBuffer = await stegoEncode(
+          buffer,
+          JSON.stringify({
+            copyright: '© Gold Fish Talents',
+            terms: 'All Rights Reserved',
+            year: '2025',
+            // "id": "9b8f3c2a-4d1e-4a6f-bf2e-7d5a946ab123",
+            // "url": `${config.public.siteUrl}/photo`,
+            ts: new Date().toISOString(),
+          }),
+          config.private.steganographyKey
+        ) */
+    await storage.setItemRaw(`photos/source/${fileName}`, buffer)
     console.log(`File Saved ${fileName}`)
 
     const { width = 0, height = 0 } = await getDimension(fileName, 'photo')
@@ -174,7 +174,7 @@ export default defineEventHandler(async (event) => {
                     : [],
                 },
               }
-            : {
+            : category && {
                 Segment: {
                   type: 'select',
                   select: {

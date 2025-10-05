@@ -18,7 +18,7 @@ export async function syncSearchDb() {
     .map(({ cover, properties }): TypesenseModel | null => {
       const title = notionTextStringify(properties.Name.title)
 
-      if (!(properties.Status.status.name === 'Active' && properties.DOB.date?.start && cover?.type === 'external')) return null
+      if (!(properties.DOB.date?.start && cover?.type === 'external')) return null
 
       return {
         id: properties.Slug.formula.string,

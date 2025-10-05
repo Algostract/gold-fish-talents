@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const title = `Gold Fish Bowl`
+const title = `Gold Fish Talents`
 const description = `Locality‑focused, talent marketplace marketplace where models, makeup artist, designer etc can be found for commercial shoot`
 
 const {

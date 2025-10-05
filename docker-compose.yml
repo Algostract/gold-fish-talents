@@ -1,4 +1,4 @@
-name: 'gold-fish-bowl-dev'
+name: 'gold-fish-talents-dev'
 services:
   app:
     build: .

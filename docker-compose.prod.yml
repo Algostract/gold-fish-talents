@@ -1,12 +1,12 @@
 version: '3.9'
 services:
   app:
-    image: ghcr.io/algostract/gold-fish-bowl:latest
+    image: ghcr.io/algostract/gold-fish-talents:latest
     env_file:
       - .env
     volumes:
-      - gold-fish-bowl_static:/app/static
-      - gold-fish-bowl_data:/app/.data
+      - gold-fish-talents_static:/app/static
+      - gold-fish-talents_data:/app/.data
     expose:
       - 3000
     networks:
@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     volumes:
-      - gold-fish-bowl_search-data:/data
+      - gold-fish-talents_search-data:/data
     networks:
       - front-tier
     deploy:
@@ -33,24 +33,24 @@ services:
         max_attempts: 3
 
 volumes:
-  gold-fish-bowl_static:
+  gold-fish-talents_static:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /root/gold-fish-bowl/static
-  gold-fish-bowl_data:
+      device: /root/gold-fish-talents/static
+  gold-fish-talents_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /root/gold-fish-bowl/.data
-  gold-fish-bowl_search-data:
+      device: /root/gold-fish-talents/.data
+  gold-fish-talents_search-data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /root/gold-fish-bowl/.data
+      device: /root/gold-fish-talents/.data
 
 networks:
   front-tier:

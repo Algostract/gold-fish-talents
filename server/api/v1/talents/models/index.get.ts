@@ -8,12 +8,12 @@ export default defineEventHandler<Promise<{ models: Model[]; count: number; page
       .collections<TypesenseModel>('model')
       .documents()
       .search({
-        q: queryParams.query,
-        query_by: queryParams.queryBy,
+        q: queryParams.query?.trim() || '*',
+        query_by: queryParams.queryBy || 'name',
         filter_by: `status:=Active&&${queryParams.filterBy}`,
         sort_by: `isFeatured:desc,${queryParams.sortBy}`,
-        per_page: queryParams.perPage,
-        page: queryParams.page,
+        per_page: queryParams.perPage || 8,
+        page: queryParams.page || 1,
       })
 
     return {
@@ -45,7 +45,7 @@ export default defineEventHandler<Promise<{ models: Model[]; count: number; page
       throw error
     }
 
-    console.error('API model/index GET', error)
+    console.error('API v1/talents/models GET', error)
 
     throw createError({
       statusCode: 500,

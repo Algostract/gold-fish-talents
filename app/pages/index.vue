@@ -3,7 +3,7 @@ definePageMeta({
   middleware: ['guest'],
 })
 
-const title = `Gold Fish Bowl`
+const title = `Gold Fish Talents`
 const description = `Locality‑focused, talent marketplace where models, voice actors, makeup artist, designer etc can be found for commercial shoot`
 
 const {
@@ -66,7 +66,7 @@ const featuredVideo = {
 <template>
   <div class="relative">
     <!-- Hero section -->
-    <section class="overlay relative -left-2 isolate min-h-dvh w-dvw md:-left-4">
+    <section class="overlay relative -left-2 isolate h-screen w-screen md:-left-4">
       <div class="absolute bottom-0 left-0 z-10 flex w-full flex-col gap-3 px-4 py-8 text-white">
         <div>
           <p class="font-sub text-lg font-semi-bold uppercase [text-shadow:2px_2px_4px_rgba(0,0,0,0.25)]">
@@ -128,7 +128,7 @@ const featuredVideo = {
         <span>Made by</span>
         <NuxtIcon name="local:shba007" filled class="text-[20px]" />
       </NuxtLink>
-      <span class="text-xs">&copy; Gold Fish Bowl 2025. All rights reserved.</span>
+      <span class="text-xs">&copy; Gold Fish Talents 2025. All rights reserved.</span>
     </footer>
   </div>
 </template>

@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Gold Fish Bowl",
+  "productName": "Gold Fish Talents",
   "version": "../package.json",
   "identifier": "com.redcatpictures.bowl",
   "build": {
@@ -15,7 +15,7 @@
         "label": "main",
         "visible": true,
         "url": "/",
-        "title": "Gold Fish Bowl",
+        "title": "Gold Fish Talents",
         "width": 1400,
         "height": 720,
         "resizable": true,

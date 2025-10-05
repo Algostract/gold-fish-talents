@@ -169,7 +169,7 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
   site: {
-    name: 'Gold Fish Bowl',
+    name: 'Gold Fish Talents',
     url: process.env.NUXT_PUBLIC_SITE_URL,
   },
   sitemap: {
@@ -184,8 +184,8 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     includeManifestIcons: false,
     manifest: {
-      name: 'Gold Fish Bowl',
-      short_name: 'Gold Fish Bowl',
+      name: 'Gold Fish Talents',
+      short_name: 'Gold Fish Talents',
       description: 'Locality‑focused, talent marketplace marketplace where models, makeup artist, designer etc can be found for commercial shoot',
       theme_color: '#FFD400',
       background_color: '#FFD400',

@@ -37,7 +37,7 @@ export default defineCachedEventHandler<Promise<DetailedModel>>(
       return {
         id: modelSlug,
         name: title,
-        description: `${title} is one of the Gold Fish Bowl's Talented Model`,
+        description: `${title} is one of the Gold Fish Talents's Talented Model`,
         gender: model.properties.Gender.select.name as Gender,
         age: differenceInYears(new Date(), parseISO(model.properties.DOB.date.start)),
         fee: model.properties.Fee.number,

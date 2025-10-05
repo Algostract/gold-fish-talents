@@ -72,7 +72,7 @@ const shareAsset = ref<ShareAsset>({
 
 <template>
   <main v-if="model" class="relative flex flex-col gap-8 p-2">
-    <section id="hero" class="relative -left-2 -top-2 isolate h-dvh w-dvw">
+    <section id="hero" class="relative -left-2 -top-2 isolate h-screen w-screen">
       <NuxtImg
         :src="`${model.photo.image}/-/scale_crop/360x720/50p,0p/`"
         :alt="`${model.name} hero image`"

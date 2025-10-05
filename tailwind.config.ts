@@ -17,8 +17,8 @@ export default <Partial<Config>>{
       '5xl': ['3.5rem', '4.1875rem'],
     },
     fontFamily: {
-      main: ['Comfortaa', 'sans-serif'],
-      sub: ['Comfortaa', 'sans-serif'],
+      main: ['Hanken Grotesk', 'sans-serif'],
+      sub: ['Hanken Grotesk', 'sans-serif'],
     },
     fontWeight: {
       light: '300',

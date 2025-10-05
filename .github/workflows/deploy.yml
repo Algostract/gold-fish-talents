@@ -113,7 +113,7 @@ jobs:
   #         script: |
   #           cd ~/${{ env.REPO }}
   #           curl -O https://raw.githubusercontent.com/${{ env.REPO }}/refs/heads/main/docker-compose.prod.yml
-  #           docker stack deploy --compose-file docker-compose.prod.yml gold-fish-bowl
+  #           docker stack deploy --compose-file docker-compose.prod.yml gold-fish-talents
 
   # build-desktop:
   #   env:
@@ -252,7 +252,7 @@ jobs:
   #       with:
   #         repo_token: ${{ secrets.GITHUB_TOKEN }}
   #         file: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
-  #         asset_name: gold-fish-bowl_${{ env.VERSION }}_arm64.apk
+  #         asset_name: gold-fish-talents_${{ env.VERSION }}_arm64.apk
   #         tag: ${{ env.VERSION }}
 
   # deploy-mobile:
