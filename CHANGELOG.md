@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.4
+
+[compare changes](https://github.com/Algostract/gold-fish-talents/compare/v0.3.3...v0.3.4)
+
+### 🩹 Fixes
+
+- Place type in notion from map to place ([498708c](https://github.com/Algostract/gold-fish-talents/commit/498708c))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.3.3
 
 [compare changes](https://github.com/Algostract/gold-fish-talents/compare/v0.3.2...v0.3.3)
