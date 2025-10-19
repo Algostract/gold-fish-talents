@@ -17,8 +17,8 @@ export default <Partial<Config>>{
       '5xl': ['3.5rem', '4.1875rem'],
     },
     fontFamily: {
-      main: ['Hanken Grotesk', 'sans-serif'],
-      sub: ['Hanken Grotesk', 'sans-serif'],
+      main: ['Plus Jakarta Sans', 'sans-serif'],
+      sub: ['Plus Jakarta Sans', 'sans-serif'],
     },
     fontWeight: {
       light: '300',

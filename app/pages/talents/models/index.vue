@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 const filterBy = ref({
-  fee: { limit: { min: 0, max: 5000 }, value: { min: 0, max: 5000 } },
+  fee: { limit: { min: 0, max: 10000 }, value: { min: 0, max: 10000 } },
 })
 
 const searchParams = ref<SearchParams>({

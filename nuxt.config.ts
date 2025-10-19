@@ -189,7 +189,7 @@ export default defineNuxtConfig({
       description: 'Locality‑focused, talent marketplace marketplace where models, makeup artist, designer etc can be found for commercial shoot',
       theme_color: '#FFD400',
       background_color: '#FFD400',
-      orientation: 'any',
+      // orientation: 'natural',
       display: 'fullscreen',
       icons: [
         {

@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
       name: notionTextStringify(project.properties.Name.title),
       address: notionTextStringify(project.properties.Address.rich_text),
     },
-    mapUrl: project.properties.Map.url,
+    mapUrl: project.properties.Place.place,
     helpline: '+919433128726',
     media: {
       photo: photos.filter(({ projectId }) => projectId === project.id),

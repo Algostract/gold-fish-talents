@@ -1,6 +1,7 @@
 /* Interface */
 export interface Photo {
   id: string
+  index: number
   title: string
   image?: string
   description: string

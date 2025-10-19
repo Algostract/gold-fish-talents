@@ -60,6 +60,7 @@ export default defineEventHandler(async (event) => {
 
         return {
           id: slug,
+          index: properties.Index.number,
           title: notionTextStringify(properties.Name.title),
           description: notionTextStringify(properties.Description.rich_text),
           image: cover?.type === 'external' ? cover.external.url.split('/')[3] : undefined,
@@ -116,7 +117,7 @@ export default defineEventHandler(async (event) => {
           name: notionTextStringify(properties.Name.title),
           address: notionTextStringify(properties.Address.rich_text),
         },
-        mapUrl: properties.Map.url,
+        mapUrl: properties.Place.place,
         helpline: '+919433128726',
         media: {
           photo: photos.filter(({ projectId }) => projectId === id),
