@@ -90,7 +90,7 @@
     "jiti": "^2.6.1",
     "playwright-core": "^1.58.2",
     "prettier": "^3.8.1",
-    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "~5.9.3",
     "vitest": "^4.0.18"
   },
