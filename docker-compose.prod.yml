@@ -16,7 +16,7 @@ services:
         max_attempts: 3
 
   typesense:
-    image: typesense/typesense:29.0
+    image: typesense/typesense:29.1
     command: --data-dir /data
     env_file:
       - .env
